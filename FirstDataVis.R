@@ -11,6 +11,15 @@ pacman::p_load(R.matlab,dplyr,tidyr,ggplot2)
 data <- readMat("./PERMANENT_CCMG_REFERENCE2.mat")
 str(data)
 
+# time kump between cycles
+max(data$Time2[,1])
+min(data$Time2[,2])
+
+# time jump while cleaning
+max(data$Time2[,240])
+min(data$Time2[,241])
+# always the same 240 s
+
 # time in seconds, 
 # roughly 4 measurement each second
 # 1 cycle roughly 46 min (each column 11133 measurements), 
@@ -62,7 +71,7 @@ df_long <- data.frame(time=c(data$Time2),
                         time_c = c(scale(data$Time2,scale=FALSE,center=apply(data$Time2,2,min))))
 
 # plot voltage + current over one cycle
-df_long %>% filter(cycle==400) %>% 
+df_long %>% filter(cycle==242) %>% 
   pivot_longer(c(voltage,current),names_to = "measure",values_to = "value") %>%
   ggplot(aes(x=time_c,y=value,color=measure)) +
   geom_line(alpha = 0.8)
@@ -73,4 +82,27 @@ df_long %>% group_by(cycle) %>% summarize(current=mean(current),voltage=mean(vol
   pivot_longer(c(voltage,current),names_to = "measure",values_to = "value") %>%
   ggplot(aes(x=cycle,y=value,color=measure)) +
   geom_line(alpha = 0.8)
+
+df_long %>% filter(time<=min(data$Time2[,242]),
+                   time>=max(data$Time2[,238])) %>%
+  ggplot(aes(x=time/60,y=current)) +
+  geom_line(alpha = 0.8)
+
+
+# Qs
+# 1 are there results of experiments under different conditions eg materials, clean air
+# 2 what is done after each cycle? cooldown?
+# 3 what cleaning is done after some cylces before the jump?
+# 4 how long do effects of cleaning processes last? into next cycle?
+# 5 data not independent
+# 6 feature generation, max, quantiles eg, portion over threshold, residuals to expected current
+# 7 degradation effects of time overall, time after last cleaning, time in cycle
+# 8 is current at peaks of voltage as relevant as at the lower timepoints
+
+# research questions:
+# 1 estimate temporal degradation between cleanings and overall degradation (trend + seasonality?)
+# 2 significance tests for changing conditions (no data yet, eg purifiede air, different cleaning protocol)
+
+
+
 
