@@ -85,7 +85,8 @@ df_long %>% filter(cycle==242) %>%
 
 df_long %>% filter(cycle==242) %>% 
   ggplot(aes(x=time_c,y=current - exp_current)) +
-  geom_line(alpha = 0.8) +
+  geom_line(alpha = 0.2) +
+  geom_smooth(alpha = 0.8,method="gam") +
   labs(x="time in cycle in s")
 # ggsave("./plots/cycle_rescurr.pdf",width = 8,height = 4)
   
