@@ -64,30 +64,50 @@ plot(data$Current2[t,],type="l",xlab="cycle",ylab="current")
 # summary(c(data$Voltage[t+c(-50:50),]))
 # plot(data$Current2[t,],type="l",xlab="cycle",ylab="current")
 
+
+exp_current <- ifelse(c(data$Voltage2) < 0.775,
+                      mean(data$Current2[data$Voltage2 < 0.775]),
+                      mean(data$Current2[data$Voltage2 >= 0.775]))
 df_long <- data.frame(time=c(data$Time2), 
-                        voltage = c(data$Voltage2),
-                        current = c(data$Current2),
-                        cycle = rep(1:1200,each=11133),
-                        time_c = c(scale(data$Time2,scale=FALSE,center=apply(data$Time2,2,min))))
+                      voltage = c(data$Voltage2),
+                      current = c(data$Current2),
+                      exp_current = exp_current,
+                      cycle = rep(1:1200,each=11133),
+                      time_c = c(scale(data$Time2,scale=FALSE,center=apply(data$Time2,2,min))))
 
 # plot voltage + current over one cycle
 df_long %>% filter(cycle==242) %>% 
   pivot_longer(c(voltage,current),names_to = "measure",values_to = "value") %>%
   ggplot(aes(x=time_c,y=value,color=measure)) +
-  geom_line(alpha = 0.8)
-  
+  geom_line(alpha = 0.8) +
+  labs(y=" ",x="time in cycle in s")
+# ggsave("./plots/cycle.pdf",width = 8,height = 4)
+
+df_long %>% filter(cycle==242) %>% 
+  ggplot(aes(x=time_c,y=current - exp_current)) +
+  geom_line(alpha = 0.8) +
+  labs(x="time in cycle in s")
+# ggsave("./plots/cycle_rescurr.pdf",width = 8,height = 4)
   
 # plot average current (and average voltage) for each cycle
-df_long %>% group_by(cycle) %>% summarize(current=mean(current),voltage=mean(voltage)) %>%
-  pivot_longer(c(voltage,current),names_to = "measure",values_to = "value") %>%
-  ggplot(aes(x=cycle,y=value,color=measure)) +
+df_long %>% group_by(cycle) %>% summarize(avg_current=mean(current),avg_voltage=mean(voltage)) %>%
+  ggplot(aes(x=cycle,y=avg_current)) +
   geom_line(alpha = 0.8)
+# ggsave("./plots/avg_current_over_cycles.pdf",width = 8,height = 4)
 
 df_long %>% filter(time<=min(data$Time2[,242]),
                    time>=max(data$Time2[,238])) %>%
   ggplot(aes(x=time/60,y=current)) +
-  geom_line(alpha = 0.8)
-
+  geom_line(alpha = 0.8) +
+  labs(x = "time in min") +
+  annotate("text", x = 11926, y = 1.6, label = "cycle 239") +
+  annotate("text", x = 11976, y = 1.6, label = "cycle 240") +
+  annotate("text", x = 12026, y = 1.6, label = "cycle 241") +
+  annotate("text", x = 11955, y = 0.07, label = "restart?",col="red") +
+  annotate("text", x = 12006, y = 0.07, label = "cleaning?",col="red") +
+  geom_vline(xintercept = 11947,col="red") +
+  geom_vline(xintercept = 11997,col="red")
+# ggsave("./plots/current_protocol.pdf",width = 8,height = 4)
 
 # Qs
 # 1 are there results of experiments under different conditions eg materials, clean air
