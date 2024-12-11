@@ -125,5 +125,21 @@ df_long %>% filter(time<=min(data$Time2[,242]),
 # 2 significance tests for changing conditions (no data yet, eg purifiede air, different cleaning protocol)
 
 
+# Qs from reading Thesis and paper
+# 1 how is loss measured? degradation as a function of time?
+
+
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # first modeling approaches # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# model current as function of s(voltage) + degradation of time overall/ after cleaning / in cycle
+# three different time degradation C exp(-lambda t), estimate C and lambda from data, with confidance bands?
+# maybe look at relative residual curves, might need robust (LTS) estimate, looks like fractale
+
+
+
 
 
