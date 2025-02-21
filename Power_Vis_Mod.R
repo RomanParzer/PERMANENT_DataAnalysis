@@ -86,6 +86,7 @@ summary(model_cycles)
 
 tmp_df <- tmp_data %>% mutate(fitted=exp(model_cycles$fitted.values),
                              resp = current ) 
+cor(tmp_df$resp,tmp_df$fitted)
 tmp_df %>%
   pivot_longer(c(fitted,resp),names_to = "type",values_to = "value") %>%
   ggplot(aes(x=time,y=value,color=type)) +
@@ -101,7 +102,7 @@ tmp_df %>%
   geom_point(alpha=0.8) +
   geom_hline(yintercept = 0,alpha=0.8,col=2)
 
-coef_mat <- array(c(0),dim=c(1200,5,4))
+# coef_mat <- array(c(0),dim=c(1200,5,4))
 
 # for (i in 1:1200) {
 #   tmp_data <- df_long %>% filter(cycle==i)
@@ -147,7 +148,7 @@ df_cycles %>% pivot_longer(c(max,avg_hi,avg_lo,Q25_hi,Q75_hi,
 
 # find methods for multivariate regression, lm can do it
 # for now, look at univariate lm:
-model_avg_hi <- lm(log(avg_hi) ~ time + time_clean ,data=df_cycles)
+model_avg_hi <- lm(log(avg_hi) ~ time + time_clean+I(time_clean^2) ,data=df_cycles)
 model_avg_hi
 # plot(model_avg_hi)
 summary(model_avg_hi)
@@ -155,7 +156,7 @@ summary(model_avg_hi)
 
 tmp_df <- df_cycles %>% mutate(fitted=exp(model_avg_hi$fitted.values),
                      resp = avg_hi )
-
+cor(tmp_df$resp,tmp_df$fitted)
 tmp_df %>%
   pivot_longer(c(fitted,resp),names_to = "type",values_to = "value") %>%
   ggplot(aes(x=cycle,y=value,color=type)) +
@@ -163,11 +164,13 @@ tmp_df %>%
 
 tmp_df %>%
   ggplot(aes(x=fitted,y=resp)) +
-  geom_point(alpha=0.8)
+  geom_point(alpha=0.8) +
+  geom_abline(slope=1,intercept = 0,col=2,alpha=0.8)
 
 tmp_df %>%
   ggplot(aes(x=time,y=resp-fitted)) +
-  geom_point(alpha=0.8)
+  geom_point(alpha=0.8) +
+  geom_hline(yintercept = 0,col=2,alpha=0.8)
 
 # include random effect for jump after cleaning
 
@@ -302,7 +305,7 @@ tmp_df %>%
 
 
 # same but without lagged variables:
-mv_model <-  lmer(log(value) ~ 0 + variable + variable:(time + time_clean +I(time_clean^2) ) + (1|cleaning),
+mv_model <-  lmer(log(value) ~ 0 + variable + variable:(time + time_clean + I(time_clean^2)) + (1|cleaning),
                   data=df_cycles_long)
 
 mv_model
@@ -333,8 +336,4 @@ tmp_df %>%
 
 # seems better than using lags
 
-# or how esle would you use a model for residuals?
-
-
-
-
+# or how else would you use a model for residuals?
