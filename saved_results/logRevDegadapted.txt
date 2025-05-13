@@ -1,0 +1,72 @@
+starting worker pid=2388 on localhost:11520 at 08:18:29.144
+starting worker pid=2386 on localhost:11520 at 08:18:29.147
+starting worker pid=2385 on localhost:11520 at 08:18:29.149
+starting worker pid=2389 on localhost:11520 at 08:18:29.151
+starting worker pid=2387 on localhost:11520 at 08:18:29.158
+Error in model doub_exp_simple for Pure Air: Error in numericDeriv(form[[3L]], names(ind), env, dir = -1 + 2 * (internalPars < : Missing value or an infinity produced when evaluating the model
+
+Done model 1 / 5 in rep 1 / 9 at 2025-04-12 08:18:50.
+Done model 2 / 5 in rep 1 / 9 at 2025-04-12 08:18:53.
+Done model 1 / 5 in rep 2 / 9 at 2025-04-12 08:18:53.
+Done model 2 / 5 in rep 2 / 9 at 2025-04-12 08:18:55.
+Done model 1 / 5 in rep 3 / 9 at 2025-04-12 08:19:09.
+Done model 1 / 5 in rep 5 / 9 at 2025-04-12 08:19:10.
+Done model 2 / 5 in rep 3 / 9 at 2025-04-12 08:19:12.
+Done model 2 / 5 in rep 5 / 9 at 2025-04-12 08:19:13.
+Done model 1 / 5 in rep 4 / 9 at 2025-04-12 08:19:15.
+Done model 2 / 5 in rep 4 / 9 at 2025-04-12 08:19:18.
+Done model 3 / 5 in rep 1 / 9 at 2025-04-12 08:21:50.
+Done model 3 / 5 in rep 2 / 9 at 2025-04-12 08:21:51.
+Done model 3 / 5 in rep 3 / 9 at 2025-04-12 08:22:12.
+Done model 3 / 5 in rep 5 / 9 at 2025-04-12 08:22:13.
+Done model 3 / 5 in rep 4 / 9 at 2025-04-12 08:22:21.
+Done model 4 / 5 in rep 4 / 9 at 2025-04-12 08:47:16.
+Done model 4 / 5 in rep 5 / 9 at 2025-04-12 08:49:17.
+Done model 4 / 5 in rep 2 / 9 at 2025-04-12 08:53:04.
+Done model 5 / 5 in rep 4 / 9 at 2025-04-12 09:10:33.
+Finished rep 4 / 9 at 2025-04-12 09:10:33.
+Done model 1 / 5 in rep 6 / 9 at 2025-04-12 09:11:20.
+Done model 2 / 5 in rep 6 / 9 at 2025-04-12 09:11:25.
+Done model 3 / 5 in rep 6 / 9 at 2025-04-12 09:15:25.
+Done model 4 / 5 in rep 1 / 9 at 2025-04-12 09:17:02.
+Done model 5 / 5 in rep 1 / 9 at 2025-04-12 09:49:32.
+Finished rep 1 / 9 at 2025-04-12 09:49:32.
+Done model 1 / 5 in rep 7 / 9 at 2025-04-12 09:50:06.
+Done model 2 / 5 in rep 7 / 9 at 2025-04-12 09:50:12.
+Done model 3 / 5 in rep 7 / 9 at 2025-04-12 09:54:12.
+Error in model doub_exp for Ambient air sample 2 test2: Error in fn(nM$xeval()): Downdated VtV is not positive definite
+
+Done model 4 / 5 in rep 6 / 9 at 2025-04-12 10:10:39.
+Error in model lin_exp for Ambient air sample 2 test2: Error in devfun(rho$pp$theta): Downdated VtV is not positive definite
+
+Done model 5 / 5 in rep 6 / 9 at 2025-04-12 10:10:54.
+Finished rep 6 / 9 at 2025-04-12 10:10:54.
+Done model 1 / 5 in rep 8 / 9 at 2025-04-12 10:11:48.
+Done model 2 / 5 in rep 8 / 9 at 2025-04-12 10:11:57.
+Done model 3 / 5 in rep 8 / 9 at 2025-04-12 10:15:57.
+Done model 5 / 5 in rep 2 / 9 at 2025-04-12 10:17:49.
+Finished rep 2 / 9 at 2025-04-12 10:17:49.
+Done model 1 / 5 in rep 9 / 9 at 2025-04-12 10:18:23.
+Done model 2 / 5 in rep 9 / 9 at 2025-04-12 10:18:29.
+Done model 3 / 5 in rep 9 / 9 at 2025-04-12 10:22:29.
+Done model 5 / 5 in rep 5 / 9 at 2025-04-12 10:43:23.
+Finished rep 5 / 9 at 2025-04-12 10:43:23.
+Done model 4 / 5 in rep 9 / 9 at 2025-04-12 10:54:21.
+Error in model doub_exp for Ambient air sample 2 test3: Error in fn(nM$xeval()): prss{Update} failed to converge in 'maxit' iterations
+
+Done model 4 / 5 in rep 7 / 9 at 2025-04-12 10:56:15.
+Done model 4 / 5 in rep 8 / 9 at 2025-04-12 11:12:38.
+Done model 5 / 5 in rep 9 / 9 at 2025-04-12 12:12:18.
+Finished rep 9 / 9 at 2025-04-12 12:12:18.
+Done model 5 / 5 in rep 8 / 9 at 2025-04-12 12:15:45.
+Finished rep 8 / 9 at 2025-04-12 12:15:45.
+Done model 4 / 5 in rep 3 / 9 at 2025-04-12 13:30:47.
+Done model 5 / 5 in rep 3 / 9 at 2025-04-12 16:49:19.
+Finished rep 3 / 9 at 2025-04-12 16:49:19.
+Done model 5 / 5 in rep 7 / 9 at 2025-04-13 05:14:25.
+Finished rep 7 / 9 at 2025-04-13 05:14:25.
+There were 15 warnings (use warnings() to see them)
+There were 13 warnings (use warnings() to see them)
+There were 13 warnings (use warnings() to see them)
+There were 13 warnings (use warnings() to see them)
+There were 48 warnings (use warnings() to see them)

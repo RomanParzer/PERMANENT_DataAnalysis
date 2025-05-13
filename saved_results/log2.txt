@@ -1,0 +1,85 @@
+starting worker pid=23916 on localhost:11102 at 21:32:33.859
+starting worker pid=23913 on localhost:11102 at 21:32:34.021
+starting worker pid=23914 on localhost:11102 at 21:32:34.099
+starting worker pid=23915 on localhost:11102 at 21:32:34.169
+starting worker pid=23917 on localhost:11102 at 21:32:34.234
+Error in model doub_exp_simple for Pure Air: Error in numericDeriv(form[[3L]], names(ind), env, dir = -1 + 2 * (internalPars < : Missing value or an infinity produced when evaluating the model
+
+Done model 1 / 5 in rep 1 / 9 at 2025-04-12 21:33:04.
+Done model 2 / 5 in rep 1 / 9 at 2025-04-12 21:33:24.
+Done model 1 / 5 in rep 2 / 9 at 2025-04-12 21:33:24.
+Done model 1 / 5 in rep 3 / 9 at 2025-04-12 21:33:33.
+Done model 1 / 5 in rep 4 / 9 at 2025-04-12 21:33:40.
+Done model 2 / 5 in rep 2 / 9 at 2025-04-12 21:33:42.
+Done model 1 / 5 in rep 5 / 9 at 2025-04-12 21:33:45.
+Done model 2 / 5 in rep 3 / 9 at 2025-04-12 21:33:51.
+Done model 2 / 5 in rep 4 / 9 at 2025-04-12 21:33:58.
+Done model 2 / 5 in rep 5 / 9 at 2025-04-12 21:34:04.
+Done model 3 / 5 in rep 1 / 9 at 2025-04-12 21:37:11.
+Done model 3 / 5 in rep 2 / 9 at 2025-04-12 21:37:30.
+Done model 3 / 5 in rep 3 / 9 at 2025-04-12 21:37:41.
+Done model 3 / 5 in rep 4 / 9 at 2025-04-12 21:38:04.
+Done model 3 / 5 in rep 5 / 9 at 2025-04-12 21:38:04.
+Done model 4 / 5 in rep 4 / 9 at 2025-04-12 22:14:33.
+Done model 4 / 5 in rep 5 / 9 at 2025-04-12 22:17:43.
+Done model 4 / 5 in rep 2 / 9 at 2025-04-12 22:23:30.
+Done model 5 / 5 in rep 4 / 9 at 2025-04-12 22:52:21.
+Finished rep 4 / 9 at 2025-04-12 22:52:21.
+Done model 1 / 5 in rep 6 / 9 at 2025-04-12 22:54:00.
+Done model 2 / 5 in rep 6 / 9 at 2025-04-12 22:54:32.
+Done model 3 / 5 in rep 6 / 9 at 2025-04-12 22:59:24.
+Done model 4 / 5 in rep 1 / 9 at 2025-04-12 22:59:53.
+Done model 5 / 5 in rep 1 / 9 at 2025-04-12 23:53:13.
+Finished rep 1 / 9 at 2025-04-12 23:53:13.
+Done model 1 / 5 in rep 7 / 9 at 2025-04-12 23:54:51.
+Done model 2 / 5 in rep 7 / 9 at 2025-04-12 23:55:26.
+Done model 3 / 5 in rep 7 / 9 at 2025-04-13 00:00:25.
+Error in model doub_exp for Ambient air sample 2 test2: Error in fn(nM$xeval()): Downdated VtV is not positive definite
+
+Done model 4 / 5 in rep 6 / 9 at 2025-04-13 00:34:34.
+Error in model lin_exp for Ambient air sample 2 test2: Error in devfun(rho$pp$theta): Downdated VtV is not positive definite
+
+Done model 1 / 5 in rep 8 / 9 at 2025-04-13 00:37:11.
+Done model 2 / 5 in rep 8 / 9 at 2025-04-13 00:37:54.
+Done model 3 / 5 in rep 8 / 9 at 2025-04-13 00:43:10.
+Done model 5 / 5 in rep 2 / 9 at 2025-04-13 00:50:59.
+Finished rep 2 / 9 at 2025-04-13 00:50:59.
+Done model 1 / 5 in rep 9 / 9 at 2025-04-13 00:52:45.
+Done model 2 / 5 in rep 9 / 9 at 2025-04-13 00:53:22.
+Done model 3 / 5 in rep 9 / 9 at 2025-04-13 00:58:37.
+Done model 5 / 5 in rep 5 / 9 at 2025-04-13 01:40:20.
+Finished rep 5 / 9 at 2025-04-13 01:40:20.
+Done model 4 / 5 in rep 9 / 9 at 2025-04-13 01:56:45.
+Error in model doub_exp for Ambient air sample 2 test3: Error in fn(nM$xeval()): prss{Update} failed to converge in 'maxit' iterations
+
+Done model 4 / 5 in rep 7 / 9 at 2025-04-13 01:57:07.
+Done model 4 / 5 in rep 8 / 9 at 2025-04-13 02:24:15.
+Done model 5 / 5 in rep 9 / 9 at 2025-04-13 03:58:55.
+Finished rep 9 / 9 at 2025-04-13 03:58:55.
+Done model 5 / 5 in rep 8 / 9 at 2025-04-13 04:03:57.
+Finished rep 8 / 9 at 2025-04-13 04:03:57.
+Done model 4 / 5 in rep 3 / 9 at 2025-04-13 05:36:24.
+Done model 5 / 5 in rep 3 / 9 at 2025-04-13 08:36:57.
+Finished rep 3 / 9 at 2025-04-13 08:36:57.
+Done model 5 / 5 in rep 7 / 9 at 2025-04-13 15:00:04.
+Finished rep 7 / 9 at 2025-04-13 15:00:04.
+Error in unserialize(node$con) : error reading from connection
+Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
+In addition: There were 15 warnings (use warnings() to see them)
+Execution halted
+Error in unserialize(node$con) : error reading from connection
+Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
+In addition: There were 13 warnings (use warnings() to see them)
+Execution halted
+Error in unserialize(node$con) : error reading from connection
+Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
+In addition: There were 48 warnings (use warnings() to see them)
+Execution halted
+Error in unserialize(node$con) : error reading from connection
+Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
+In addition: There were 13 warnings (use warnings() to see them)
+Error in unserialize(node$con) : error reading from connection
+Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
+In addition: There were 13 warnings (use warnings() to see them)
+Execution halted
+Execution halted

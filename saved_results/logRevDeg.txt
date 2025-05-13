@@ -1,0 +1,92 @@
+starting worker pid=85495 on localhost:11397 at 17:24:55.518
+starting worker pid=85497 on localhost:11397 at 17:24:55.521
+starting worker pid=85493 on localhost:11397 at 17:24:55.518
+starting worker pid=85496 on localhost:11397 at 17:24:55.526
+starting worker pid=85494 on localhost:11397 at 17:24:55.534
+Error in model doub_exp_simple for Ambient air test 1: Error in nls(log(current) ~ b0 + b1 * time + b3 * exp(b4 * time), data = data, : step factor 0.000488281 reduced below 'minFactor' of 0.000976562
+
+Done model 1 / 5 in rep 2 / 9 at 2025-04-10 17:25:24.
+Done model 2 / 5 in rep 2 / 9 at 2025-04-10 17:25:27.
+Done model 1 / 5 in rep 5 / 9 at 2025-04-10 17:25:27.
+Done model 1 / 5 in rep 4 / 9 at 2025-04-10 17:25:31.
+Done model 2 / 5 in rep 5 / 9 at 2025-04-10 17:25:32.
+Done model 2 / 5 in rep 4 / 9 at 2025-04-10 17:25:35.
+Done model 1 / 5 in rep 1 / 9 at 2025-04-10 17:25:36.
+Done model 1 / 5 in rep 3 / 9 at 2025-04-10 17:25:39.
+Done model 2 / 5 in rep 1 / 9 at 2025-04-10 17:25:40.
+Done model 2 / 5 in rep 3 / 9 at 2025-04-10 17:25:43.
+Done model 3 / 5 in rep 2 / 9 at 2025-04-10 17:28:01.
+Done model 3 / 5 in rep 5 / 9 at 2025-04-10 17:28:08.
+Done model 3 / 5 in rep 4 / 9 at 2025-04-10 17:28:12.
+Done model 3 / 5 in rep 1 / 9 at 2025-04-10 17:28:19.
+Done model 3 / 5 in rep 3 / 9 at 2025-04-10 17:28:23.
+Done model 4 / 5 in rep 4 / 9 at 2025-04-10 18:14:44.
+Error in model lin_exp for Pure air sample 2: Error in initializePtr(): Downdated VtV is not positive definite
+
+Done model 5 / 5 in rep 4 / 9 at 2025-04-10 18:15:03.
+Finished rep 4 / 9 at 2025-04-10 18:15:03.
+Error in model doub_exp_simple for Ambient air sample 2 test2: Error in nls(log(current) ~ b0 + b1 * time + b3 * exp(b4 * time), data = data, : step factor 0.000488281 reduced below 'minFactor' of 0.000976562
+
+Done model 1 / 5 in rep 6 / 9 at 2025-04-10 18:16:05.
+Done model 2 / 5 in rep 6 / 9 at 2025-04-10 18:16:16.
+Done model 4 / 5 in rep 5 / 9 at 2025-04-10 18:17:48.
+Error in model lin_exp for Ambient air sample 2: Error in initializePtr(): Downdated VtV is not positive definite
+
+Done model 5 / 5 in rep 5 / 9 at 2025-04-10 18:18:05.
+Finished rep 5 / 9 at 2025-04-10 18:18:05.
+Done model 1 / 5 in rep 7 / 9 at 2025-04-10 18:18:59.
+Done model 2 / 5 in rep 7 / 9 at 2025-04-10 18:19:09.
+Done model 3 / 5 in rep 6 / 9 at 2025-04-10 18:21:12.
+Done model 4 / 5 in rep 2 / 9 at 2025-04-10 18:23:46.
+Error in model lin_exp for Ambient air test 1: Error in initializePtr(): Downdated VtV is not positive definite
+
+Done model 5 / 5 in rep 2 / 9 at 2025-04-10 18:24:02.
+Finished rep 2 / 9 at 2025-04-10 18:24:02.
+Done model 3 / 5 in rep 7 / 9 at 2025-04-10 18:24:07.
+Error in model doub_exp_simple for PM filter sample 2: Error in nls(log(current) ~ b0 + b1 * time + b3 * exp(b4 * time), data = data, : step factor 0.000488281 reduced below 'minFactor' of 0.000976562
+
+Done model 1 / 5 in rep 8 / 9 at 2025-04-10 18:24:58.
+Done model 2 / 5 in rep 8 / 9 at 2025-04-10 18:25:15.
+Done model 3 / 5 in rep 8 / 9 at 2025-04-10 18:30:20.
+Done model 4 / 5 in rep 1 / 9 at 2025-04-10 19:17:01.
+Error in model lin_exp for Pure Air: Error in initializePtr(): Downdated VtV is not positive definite
+
+Done model 5 / 5 in rep 1 / 9 at 2025-04-10 19:17:25.
+Finished rep 1 / 9 at 2025-04-10 19:17:25.
+Done model 1 / 5 in rep 9 / 9 at 2025-04-10 19:18:17.
+Done model 2 / 5 in rep 9 / 9 at 2025-04-10 19:18:26.
+Done model 3 / 5 in rep 9 / 9 at 2025-04-10 19:23:38.
+Error in model doub_exp for Ambient air sample 2 test2: Error in fn(nM$xeval()): Downdated VtV is not positive definite
+
+Done model 4 / 5 in rep 6 / 9 at 2025-04-10 20:16:21.
+Error in model lin_exp for Ambient air sample 2 test2: Error in initializePtr(): Downdated VtV is not positive definite
+
+Done model 5 / 5 in rep 6 / 9 at 2025-04-10 20:16:42.
+Finished rep 6 / 9 at 2025-04-10 20:16:42.
+Done model 4 / 5 in rep 9 / 9 at 2025-04-10 20:31:48.
+Error in model lin_exp for ALL Filters sample 2: Error in initializePtr(): Downdated VtV is not positive definite
+
+Done model 5 / 5 in rep 9 / 9 at 2025-04-10 20:32:04.
+Finished rep 9 / 9 at 2025-04-10 20:32:04.
+Error in model doub_exp for Ambient air sample 2 test3: Error in fn(nM$xeval()): prss{Update} failed to converge in 'maxit' iterations
+
+Done model 4 / 5 in rep 7 / 9 at 2025-04-10 20:34:39.
+Error in model lin_exp for Ambient air sample 2 test3: Error in initializePtr(): Downdated VtV is not positive definite
+
+Done model 5 / 5 in rep 7 / 9 at 2025-04-10 20:34:50.
+Finished rep 7 / 9 at 2025-04-10 20:34:50.
+Done model 4 / 5 in rep 8 / 9 at 2025-04-10 20:37:38.
+Error in model lin_exp for PM filter sample 2: Error in initializePtr(): Downdated VtV is not positive definite
+
+Done model 5 / 5 in rep 8 / 9 at 2025-04-10 20:37:46.
+Finished rep 8 / 9 at 2025-04-10 20:37:46.
+Done model 4 / 5 in rep 3 / 9 at 2025-04-10 23:59:53.
+Error in model lin_exp for Ambient air test 2: Error in initializePtr(): Downdated VtV is not positive definite
+
+Done model 5 / 5 in rep 3 / 9 at 2025-04-11 00:00:00.
+Finished rep 3 / 9 at 2025-04-11 00:00:00.
+There were 38 warnings (use warnings() to see them)There were 50 or more warnings (use warnings() to see the first 50)
+
+There were 11 warnings (use warnings() to see them)
+There were 50 or more warnings (use warnings() to see the first 50)There were 50 or more warnings (use warnings() to see the first 50)
+
