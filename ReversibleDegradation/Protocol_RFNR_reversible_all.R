@@ -3,10 +3,13 @@ if("pacman" %in% rownames(installed.packages()) == FALSE) {install.packages("pac
 pacman::p_load(foreach,parallel,dplyr,tidyr,ggplot2,readxl)
 source("./RFNR_model_functions.R")
 
-datanames <- c("Pure air","Ambient air test 1","Ambient air test 2",
-               "Pure air sample 2","Ambient air sample 2","Ambient air sample 2 test2",
-               "Ambient air sample 2 test3",
-               "PM filter sample 2","ALL Filters sample 2",
+
+# adapt data names
+datanames <- c("Pure air s1","Pure air s2",
+               "Ambient air s1 t1","Ambient air s1 t2",
+               "Ambient air s2 t1","Ambient air s2 t2",
+               "Ambient air s2 t3",
+               "PM filter s2","ALL filters s2",
                paste0("RH",c(100,50,30,15))
                )
 datanames <- c(datanames,paste0(datanames," MEA2"))
@@ -15,33 +18,18 @@ numdat <- length(datanames)
 
 models <- list(
   "Decay only"=function(y,x,dum,ndx,jump_direction=NULL){
-    RFNR(y,x,dum,ndx,log_order=1,jump_direction = "none",init=c(-1,1e-4))
+    RFNR(y,x,dum,ndx,log_order=1,jump_direction = "none",init=c(-1,-10))
   },
   "Decay curvature"=function(y,x,dum,ndx,jump_direction=NULL){
-    RFNR(y,x,dum,ndx,log_order=2,jump_direction = "none",init=c(-1,1e-4,0.5,1e-4))
+    RFNR(y,x,dum,ndx,log_order=2,jump_direction = "none",init=c(-1,-10,-1,-10))
   },
   "Decay shocks"=function(y,x,dum,ndx,jump_direction){
-    RFNR(y,x,dum,ndx,log_order=1,jump_direction = jump_direction,init=c(-1,1e-4,log(2),-2))
+    RFNR(y,x,dum,ndx,log_order=1,jump_direction = jump_direction,init=c(-1,-10,0,1))
   },
   "Full"=function(y,x,dum,ndx,jump_direction){
-    RFNR(y,x,dum,ndx,log_order=2,jump_direction = jump_direction,init=c(-1,1e-4,0.5,1e-4,log(2),-2))
+    RFNR(y,x,dum,ndx,log_order=2,jump_direction = jump_direction,init=c(-1,-10,-1,-10,0,1))
   }
     )
-
-# models <- list(
-#   "Decay only"=function(y,x,dum,ndx,jump_direction=NULL){
-#     RFNR(y,x,dum,ndx,log_order=1,jump_direction = "none")
-#   },
-#   "Decay curvature"=function(y,x,dum,ndx,jump_direction=NULL){
-#     RFNR(y,x,dum,ndx,log_order=2,jump_direction = "none")
-#   },
-#   "Decay shocks"=function(y,x,dum,ndx,jump_direction){
-#     RFNR(y,x,dum,ndx,log_order=1,jump_direction = jump_direction)
-#   },
-#   "Full"=function(y,x,dum,ndx,jump_direction){
-#     RFNR(y,x,dum,ndx,log_order=2,jump_direction = jump_direction)
-#   }
-# )
 
 
 mygrad <- function(x,maxh) {
@@ -52,35 +40,32 @@ mygrad <- function(x,maxh) {
            rep(NA,maxh)))
 }
 
-hs <- c(200,200,200,
-        200,200,200,
-        200,200,200,
-        8,200,200,200,
-        200,200,200,
-        200,200,200,
-        200,200,200,
-        100,80,200,200)
-grad_cutoffs <- c(0.06,0.035,0.035,
-                  0.035,0.035,0.035,
-                  0.01,0.035,0.035,
-                  0.01,0.035,0.035,0.035,
-                  0.06,0.035,0.032,
-                  0.035,0.035,0.035,
+hs <- c(100,100,100,
+        100,100,100,
+        100,100,100,
+        8,100,100,100,
+        100,100,100,
+        100,100,100,
+        100,100,100,
+        8,80,100,100)
+grad_cutoffs <- c(0.06,0.035,0.09,
+                  0.035,0.035,0.07,
+                  0.01,0.035,0.07,
+                  0.01,0.035,0.035,0.04,
+                  0.06,0.035,0.035,
+                  0.12,0.07,0.05,
                   0.01,0.035,0.035,
                   0.02,0.028,0.035,0.04)
 # just for supplementary table
-# name_order <- c(1,4,2,3,5,6,7,8,9,
-#                 10,11,12,13)
-# name_order <- c(name_order,13+name_order)
 # 
-# mygraddf <- data.frame(datanames[name_order][1:13],hs[1:13],grad_cutoffs[1:13],hs[14:26],grad_cutoffs[14:26])
+# mygraddf <- data.frame(datanames[1:13],hs[1:13],grad_cutoffs[1:13],hs[14:26],grad_cutoffs[14:26])
 # colnames(mygraddf) <- c("data","h",expression(tau),"h",expression(tau))
 # knitr::kable(mygraddf,format="latex",booktabs=TRUE) %>%
 #   kableExtra::add_header_above(c(" "=1,"MEA1" = 2,"MEA2"=2))
 
-unlink("../saved_results/log.txt")
-n.cores <- parallel::detectCores() # adapt!
-my.cluster <- parallel::makeCluster(n.cores-1, type = "PSOCK", outfile = "../saved_results/log.txt")
+unlink("./saved_results/log.txt")
+n.cores <- parallel::detectCores() # adapt! 
+my.cluster <- parallel::makeCluster(n.cores-1, type = "PSOCK", outfile = "./saved_results/log.txt")
 doParallel::registerDoParallel(cl = my.cluster)
 # foreach::getDoParRegistered()
 clusterExport(my.cluster,c('datanames','models','mygrad','hs','grad_cutoffs'), envir = environment())
@@ -88,9 +73,11 @@ clusterEvalQ(my.cluster, {
   pacman::p_load(foreach,parallel,dplyr,tidyr,ggplot2,readxl)
   source("./RFNR_model_functions.R")
 })
-# i <- 13+10
-foreach(i=1:numdat) %dopar% {
-  data <- read_excel("../data/Dati_PERMANENT_reversible_all.xlsx",sheet=i)
+
+# i <- 13
+# i <- 10
+foreach(i=1:length(datanames)) %dopar% {
+  data <- read_excel("../data/Dati_PERMANENT_reversible_all_ordered.xlsx",sheet=i)
   if (i==10) {
     jump_direction <- "down"
   } else {
@@ -116,6 +103,10 @@ foreach(i=1:numdat) %dopar% {
     }
   }
   data <- data %>% mutate("grad"=grad)
+  # add jump at start for following experiments
+  if (i %in% c(10,13,26)) {
+    ind[1] <- TRUE
+  }
   
   xlo <- 5000*(5/5-1)
   stepsize <- 5e3
@@ -146,9 +137,13 @@ foreach(i=1:numdat) %dopar% {
   # # application
   x <- data$time
   y <- data$current
-  ndx <- seq(1, length(x), 60*4) # one measurement every minute
+  # less downsampling for RH100 cases
+  if (i %in% c(10,23)) {
+    ndx <- seq(1, length(x), 12*4) # one measurement every 12 s / 5 per minute
+  } else {
+    ndx <- seq(1, length(x), 60*4) # one measurement every minute
+  }
   # str(y[ndx])
-  
   
   xnew <- x[-ndx]
   time_ind <- 1 + (1:length(x))[-ndx] * (length(ndx)-1) / (max(ndx))
@@ -165,10 +160,10 @@ foreach(i=1:numdat) %dopar% {
   model_comp <-  data.frame(data=NULL,material=NULL,model=NULL,error=NULL,error_measure=NULL,value=NULL)
   if (i < 14) {
     tmp_data_name <- datanames[i]
-    tmp_material <- "original"
+    tmp_material <- "MEA1"
   } else {
     tmp_data_name <- datanames[i-13]
-    tmp_material <- "MEA 2"
+    tmp_material <- "MEA2"
   }
   
   for (k in 1:length(models)) {
@@ -181,7 +176,6 @@ foreach(i=1:numdat) %dopar% {
                                      value=as.numeric(eval_fit(log(y[ndx[ind_test]]),predict(modres,xnew = x[ndx[ind_test]],dumnew = dum[ind_test],type = "linear")))))
     }
     modres <- try(models[[k]](y,x,dum,ndx,jump_direction))
-    
     if (!("try-error" %in% class(modres))) {
       model_comp <- rbind(model_comp,
                           data.frame(data=tmp_data_name,material=tmp_material,model=names(models)[k],
@@ -219,12 +213,10 @@ foreach(i=1:numdat) %dopar% {
   # tmp_plot
   ggsave(paste0("./plots_residuals_rev_deg/ResHist_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8,height = 5)
   
-  
   tmp_plot <- plot(modres,"res-acf")
+  # tmp_plot
   ggsave(paste0("./plots_residuals_rev_deg/ResACF_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8,height = 5)
-  # pdf(paste0("./plots_residuals_rev_deg/ResACF_RFNR_",datanames[i],".pdf"),width = 8,height = 5)
-  # plot(modres,"res-acf")
-  # dev.off()
+
   
   # normality tests
   norm_tests <- list(
@@ -246,27 +238,18 @@ foreach(i=1:numdat) %dopar% {
                             "rho","lower","upper")
   summod <- summary(modres,corr=TRUE)
   alpha <- 0.05
-  # myqt <- qt(alpha,df = length(modres$y_use) - length(modres$pars),lower.tail = FALSE)
-  myqt <- qnorm(alpha,lower.tail = FALSE)
+  myqnorm <- qnorm(alpha/2,lower.tail = FALSE)
   model_fits[1] <- length(which(ind))
   model_fits[2] <- mean(diff(data$time[which(ind)]))
   model_fits[3] <- c(rep(30,9),100,50,30,15,rep(30,9),100,50,30,15)[i]
   
-  model_fits[4] <- exp(summod$par_sig[1,1])
-  model_fits[5] <- exp(summod$par_sig[1,1] - summod$par_sig[1,2]*myqt)
-  model_fits[6] <- exp(summod$par_sig[1,1] + summod$par_sig[1,2]*myqt)
+  model_fits[4:6] <- exp(summod$par_sig[1,1] + c(0,-1,1)*summod$par_sig[1,2]*myqnorm)
+  model_fits[7:9] <- exp(summod$par_sig[2,c(1)] + c(0,-1,1)*summod$par_sig[2,c(2)]*myqnorm)
+  model_fits[10:12] <- exp(summod$par_sig[3,c(1)] + c(0,-1,1)*summod$par_sig[3,c(2)]*myqnorm)
+  model_fits[13:15] <- exp(summod$par_sig[4,c(1)] + c(0,-1,1)*summod$par_sig[4,c(2)]*myqnorm)
+  model_fits[16:18] <- exp(summod$par_sig[5,c(1)] + c(0,-1,1)*summod$par_sig[5,c(2)]*myqnorm)
   
-  model_fits[7:9] <- summod$par_sig[2,c(1)] + c(0,-1,1)*summod$par_sig[2,c(2)]
-  model_fits[10:12] <- summod$par_sig[3,c(1)] + c(0,-1,1)*summod$par_sig[3,c(2)]
-  model_fits[13:15] <- summod$par_sig[4,c(1)] + c(0,-1,1)*summod$par_sig[4,c(2)]
-  
-  model_fits[16] <- exp(summod$par_sig[5,1])
-  model_fits[17] <- exp(summod$par_sig[5,1] - summod$par_sig[5,2]*myqt)
-  model_fits[18] <- exp(summod$par_sig[5,1] + summod$par_sig[5,2]*myqt)
-  
-  model_fits[19] <- modres$rho_upper / (1+exp(-summod$par_sig[6,1]))
-  model_fits[20] <- modres$rho_upper / (1+exp(-summod$par_sig[6,1]+ summod$par_sig[6,2]*myqt))
-  model_fits[21] <- modres$rho_upper / (1+exp(-summod$par_sig[6,1]- summod$par_sig[6,2]*myqt))
+  model_fits[19:21] <- modres$rho_upper / (1+exp(-summod$par_sig[6,1] + c(0,1,-1)*summod$par_sig[6,2]*myqnorm))
 
   my_full_dat <- data.frame(data_tmp,data=tmp_data_name,material=tmp_material,fit=as.numeric(modres$fitted_jumps))
   
@@ -280,15 +263,9 @@ foreach(i=1:numdat) %dopar% {
   resi
 }
 
-data_order <- c(1,3,4,2,5,6,7,8,9,
-                10,11,12,13)
-data_order <- c(data_order,13+data_order)
-name_order <- c(1,4,2,3,5,6,7,8,9,
-                10,11,12,13)
-name_order <- c(name_order,13+name_order)
 
 model_fits <- matrix(NA,numdat,21)
-row.names(model_fits) <- datanames[name_order]
+row.names(model_fits) <- datanames
 colnames(model_fits) <- c("jumps","mean_time_jumps","rh",
                           "c1","lower","upper",
                           "lam1","lower","upper",
@@ -298,7 +275,7 @@ colnames(model_fits) <- c("jumps","mean_time_jumps","rh",
                           "rho","lower","upper")
 
 sum_list <- vector("list",numdat)
-names(sum_list) <- datanames[name_order]
+names(sum_list) <- datanames
 
 
 model_comp <-  data.frame(data=NULL,model=NULL,error=NULL,error_measure=NULL,value=NULL)
@@ -306,8 +283,8 @@ my_full_dat <- data.frame(NULL)
 
 for (i in 1:numdat) {
   resi <- readRDS(paste0("./saved_results_loop/RFNR_results_i",i,".rds"))
-  model_fits[data_order[i],] <- resi$model_fits
-  sum_list[[data_order[i]]] <- resi$sum_list
+  model_fits[i,] <- resi$model_fits
+  sum_list[[i]] <- resi$sum_list
   my_full_dat <- rbind(my_full_dat,
                        resi$my_full_dat)
   model_comp <- rbind(model_comp,
@@ -318,7 +295,6 @@ saveRDS(list(model_fits=model_fits,
              sum_list = sum_list,
              my_full_dat = my_full_dat,
              datanames = datanames,
-             data_order = data_order,
              model_comp = model_comp),
-        "./saved_results/results_RFNR_model_fixed_start.rds")
+        "./saved_results/results_RFNR_final.rds")
     
