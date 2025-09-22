@@ -1,108 +1,108 @@
-starting worker pid=97001 on localhost:11833 at 18:38:46.618
-starting worker pid=97003 on localhost:11833 at 18:38:46.624
-starting worker pid=97002 on localhost:11833 at 18:38:46.630
-starting worker pid=97005 on localhost:11833 at 18:38:46.629
-starting worker pid=97004 on localhost:11833 at 18:38:46.628
-starting worker pid=96999 on localhost:11833 at 18:38:46.635
-starting worker pid=97000 on localhost:11833 at 18:38:46.644
+starting worker pid=25324 on localhost:11451 at 13:56:40.228
+starting worker pid=25323 on localhost:11451 at 13:56:40.256
+starting worker pid=25326 on localhost:11451 at 13:56:40.257
+starting worker pid=25325 on localhost:11451 at 13:56:40.265
+starting worker pid=25328 on localhost:11451 at 13:56:40.267
+starting worker pid=25327 on localhost:11451 at 13:56:40.276
+starting worker pid=25329 on localhost:11451 at 13:56:40.284
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 Registered S3 method overwritten by 'quantmod':
   method            from
   as.zoo.data.frame zoo 
-Finished rep 2 / 26 at 2025-09-12 18:52:44.
+Finished rep 2 / 26 at 2025-09-22 14:06:17.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 Registered S3 method overwritten by 'quantmod':
   method            from
   as.zoo.data.frame zoo 
-Finished rep 3 / 26 at 2025-09-12 18:53:36.
+Finished rep 3 / 26 at 2025-09-22 14:07:11.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 Registered S3 method overwritten by 'quantmod':
   method            from
   as.zoo.data.frame zoo 
-Finished rep 1 / 26 at 2025-09-12 18:53:42.
+Finished rep 1 / 26 at 2025-09-22 14:07:14.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 Registered S3 method overwritten by 'quantmod':
   method            from
   as.zoo.data.frame zoo 
-Finished rep 4 / 26 at 2025-09-12 18:55:43.
+Finished rep 4 / 26 at 2025-09-22 14:08:57.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 11 / 26 at 2025-09-12 18:56:51.
+Finished rep 11 / 26 at 2025-09-22 14:09:43.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 12 / 26 at 2025-09-12 18:57:49.
+Finished rep 12 / 26 at 2025-09-22 14:10:20.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 13 / 26 at 2025-09-12 18:59:43.
-`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Registered S3 method overwritten by 'quantmod':
-  method            from
-  as.zoo.data.frame zoo 
-Finished rep 6 / 26 at 2025-09-12 19:01:43.
+Finished rep 13 / 26 at 2025-09-22 14:11:36.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 Registered S3 method overwritten by 'quantmod':
   method            from
   as.zoo.data.frame zoo 
-Finished rep 7 / 26 at 2025-09-12 19:04:43.
-`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 9 / 26 at 2025-09-12 19:09:26.
-`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 10 / 26 at 2025-09-12 19:12:00.
-`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 14 / 26 at 2025-09-12 19:14:19.
-`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 15 / 26 at 2025-09-12 19:16:45.
-`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 8 / 26 at 2025-09-12 19:21:41.
+Finished rep 6 / 26 at 2025-09-22 14:12:53.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 Registered S3 method overwritten by 'quantmod':
   method            from
   as.zoo.data.frame zoo 
-Finished rep 5 / 26 at 2025-09-12 19:23:41.
+Finished rep 7 / 26 at 2025-09-22 14:14:52.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 17 / 26 at 2025-09-12 19:25:21.
+Finished rep 9 / 26 at 2025-09-22 14:18:12.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 16 / 26 at 2025-09-12 19:25:50.
+Finished rep 10 / 26 at 2025-09-22 14:19:46.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 24 / 26 at 2025-09-12 19:27:06.
+Finished rep 14 / 26 at 2025-09-22 14:21:48.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 25 / 26 at 2025-09-12 19:28:01.
+Finished rep 15 / 26 at 2025-09-22 14:23:38.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 26 / 26 at 2025-09-12 19:29:50.
+Finished rep 8 / 26 at 2025-09-22 14:26:36.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 22 / 26 at 2025-09-12 19:38:39.
+Registered S3 method overwritten by 'quantmod':
+  method            from
+  as.zoo.data.frame zoo 
+Finished rep 5 / 26 at 2025-09-22 14:28:33.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 18 / 26 at 2025-09-12 19:45:32.
+Finished rep 17 / 26 at 2025-09-22 14:29:38.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 19 / 26 at 2025-09-12 19:46:13.
+Finished rep 16 / 26 at 2025-09-22 14:30:05.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 21 / 26 at 2025-09-12 19:46:46.
+Finished rep 24 / 26 at 2025-09-22 14:31:03.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 20 / 26 at 2025-09-12 19:50:33.
+Finished rep 25 / 26 at 2025-09-22 14:31:41.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Finished rep 23 / 26 at 2025-09-12 19:57:51.
+Finished rep 26 / 26 at 2025-09-22 14:32:57.
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+Finished rep 22 / 26 at 2025-09-22 14:39:08.
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+Finished rep 18 / 26 at 2025-09-22 14:51:17.
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+Finished rep 19 / 26 at 2025-09-22 14:51:55.
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+Finished rep 21 / 26 at 2025-09-22 14:52:08.
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+Finished rep 20 / 26 at 2025-09-22 14:55:05.
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+Finished rep 23 / 26 at 2025-09-22 14:57:43.
 Error in unserialize(node$con) : error reading from connection
 Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
+In addition: There were 50 or more warnings (use warnings() to see the first 50)
+Execution halted
 Error in unserialize(node$con) : error reading from connection
 Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
 In addition: There were 50 or more warnings (use warnings() to see the first 50)
 Error in unserialize(node$con) : error reading from connection
 Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
+In addition: There were 50 or more warnings (use warnings() to see the first 50)
 Error in unserialize(node$con) : error reading from connection
 Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
-Error in unserialize(node$con) : error reading from connection
-Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
-In addition: In addition: In addition: In addition: Execution halted
-There were 50 or more warnings (use warnings() to see the first 50)
-There were 50 or more warnings (use warnings() to see the first 50)Error in unserialize(node$con) : error reading from connection
-Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
-
-There were 50 or more warnings (use warnings() to see the first 50)Execution halted
-There were 50 or more warnings (use warnings() to see the first 50)In addition: 
-
+In addition: There were 50 or more warnings (use warnings() to see the first 50)
 Execution halted
-There were 50 or more warnings (use warnings() to see the first 50)
+Execution halted
 Execution halted
 Error in unserialize(node$con) : error reading from connection
 Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
-In addition: Execution halted
+In addition: There were 50 or more warnings (use warnings() to see the first 50)
 Execution halted
-There were 50 or more warnings (use warnings() to see the first 50)
+Error in unserialize(node$con) : error reading from connection
+Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
+In addition: There were 50 or more warnings (use warnings() to see the first 50)
+Error in unserialize(node$con) : error reading from connection
+Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
+In addition: There were 50 or more warnings (use warnings() to see the first 50)
+Execution halted
 Execution halted

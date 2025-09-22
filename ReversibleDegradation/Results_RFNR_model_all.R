@@ -27,8 +27,6 @@ for (i in 1:13) {
 }
 comp_kab
 
-
-
 # just one error type for one data set ; do not show interpolating error on withheld data
 onedata_tab <- res$model_comp %>% filter(data=="Ambient air s1 t1",material=="MEA1",error!="withheld fit",error_measure!="Cor") %>% 
   pivot_wider(names_from = c("error","error_measure"),values_from = "value")
@@ -101,7 +99,6 @@ df_parCIs[13+26*5,c(5,6)] <- NA
 
 # 1.3 RH15 MEA1 lam1 estimate too small, remove
 df_parCIs[13+26*3,c(4)] <- NA # 8.367918e-12
-
 
 # 2.1: PM filter MEA2 lam1 too big, set to 0, Inf
 df_parCIs[8+13+26*1,c(5,6)] <- c(0,Inf) # 6.603397e-30 2.74845e+15
@@ -199,7 +196,7 @@ deg_curves %>% filter(time>1e3,
   facet_grid(material~isrh,scales="free_x") +
   theme(strip.text.x = element_blank()) +
   geom_text(data=deg_curves %>% filter(time>1e5,data=="ALL filters s2",time>106001, time < 106002),
-            size=1.5,nudge_y = -0.03,nudge_x = 0.05,
+            size=2,nudge_y = -0.05,nudge_x = 0.05,
             aes(label=data),show.legend = FALSE)
 # ggsave(paste0("./plots_rev_deg/RelDegCurves_all.pdf"),width = 10,height = 5)
 
@@ -211,8 +208,10 @@ tmp_alpha <- 0.05
 M <- 1e5
 # require(mvtnorm)
 
-est_t70 <- est_rd5 <- numeric(26)
-quant_t70 <- quant_rd5 <- matrix(c(0),26,2)
+est_t <- est_rd <- numeric(26)
+quant_t <- quant_rd <- matrix(c(0),26,2)
+t_rd <- 0.5
+rd_time <- 5*3600
 set.seed(1234)
 for (i in 1:nrow(res$model_fits)) {
   releg5h <- timesto70 <- numeric(M)
@@ -229,26 +228,26 @@ for (i in 1:nrow(res$model_fits)) {
   # sigma <- diag(6) * outer(se,se)
   coefj <- MASS::mvrnorm(M,mu = res$sum_list[[i]]$summary$par_sig[,1],Sigma=sigma)
   for (j in 1:M) {
-    uniroot_res <- try(uniroot(function(tmp_t) {(-exp(coefj[j,2])*tmp_t - exp(coefj[j,3])*(1-exp(-exp(coefj[j,4])*tmp_t)))-log(0.7)},
+    uniroot_res <- try(uniroot(function(tmp_t) {(-exp(coefj[j,2])*tmp_t - exp(coefj[j,3])*(1-exp(-exp(coefj[j,4])*tmp_t)))-log(t_rd)},
                                interval = c(0,1e3),extendInt = "downX",tol = 1e-2),
                        silent=TRUE)
     if (inherits(uniroot_res,what = "try-error")) {
       uniroot_res$root <- Inf
     }
     timesto70[j] <- uniroot_res$root
-    releg5h[j] <- exp(-exp(coefj[j,2])*18000 - exp(coefj[j,3])*(1-exp(-exp(coefj[j,4])*18000)))
+    releg5h[j] <- exp(-exp(coefj[j,2])*rd_time - exp(coefj[j,3])*(1-exp(-exp(coefj[j,4])*rd_time)))
   }
 
-  uniroot_res <- try(uniroot(function(tmp_t) {(-exp(res$sum_list[[i]]$summary$par_sig[2,1])*tmp_t - exp(res$sum_list[[i]]$summary$par_sig[3,1])*(1-exp(-exp(res$sum_list[[i]]$summary$par_sig[4,1])*tmp_t)))-log(0.7)},
+  uniroot_res <- try(uniroot(function(tmp_t) {(-exp(res$sum_list[[i]]$summary$par_sig[2,1])*tmp_t - exp(res$sum_list[[i]]$summary$par_sig[3,1])*(1-exp(-exp(res$sum_list[[i]]$summary$par_sig[4,1])*tmp_t)))-log(t_rd)},
                              interval = c(0,1e3),extendInt = "downX",tol = 1e-2))
   if (inherits(uniroot_res,what = "try-error")) {
     uniroot_res$root <- Inf
   }
-  est_t70[i] <- uniroot_res$root
-  quant_t70[i,] <- quantile(timesto70,probs = c(tmp_alpha/2,1-tmp_alpha/2))
+  est_t[i] <- uniroot_res$root
+  quant_t[i,] <- quantile(timesto70,probs = c(tmp_alpha/2,1-tmp_alpha/2))
 
-  est_rd5[i] <- exp(-exp(res$sum_list[[i]]$summary$par_sig[2,1])*18000 - exp(res$sum_list[[i]]$summary$par_sig[3,1])*(1-exp(-exp(res$sum_list[[i]]$summary$par_sig[4,1])*18000)))
-  quant_rd5[i,] <- quantile(releg5h,probs = c(tmp_alpha/2,1-tmp_alpha/2),na.rm = TRUE)
+  est_rd[i] <- exp(-exp(res$sum_list[[i]]$summary$par_sig[2,1])*rd_time - exp(res$sum_list[[i]]$summary$par_sig[3,1])*(1-exp(-exp(res$sum_list[[i]]$summary$par_sig[4,1])*rd_time)))
+  quant_rd[i,] <- quantile(releg5h,probs = c(tmp_alpha/2,1-tmp_alpha/2),na.rm = TRUE)
 
   print(quantile(timesto70,probs=c(0.95,0.975,0.995)))
   print(quantile(releg5h,probs=c(0.95,0.975,0.995),na.rm=TRUE))
@@ -259,22 +258,22 @@ for (i in 1:nrow(res$model_fits)) {
 df_degCIs <- data.frame(NULL)
 df_degCIs <- rbind(df_degCIs,
                    data.frame(data=c(datanames[1:13],datanames[1:13]),material=c(rep("MEA1",13),rep("MEA2",13)),
-                              term="Time until 70% of pcd0",
-                              estimate=est_t70,
-                              lower=quant_t70[,1],
-                              upper=quant_t70[,2]))
+                              term="Time until 50% of pcd0",
+                              estimate=est_t,
+                              lower=quant_t[,1],
+                              upper=quant_t[,2]))
 
 df_degCIs <- rbind(df_degCIs,
                    data.frame(data=c(datanames[1:13],datanames[1:13]),material=c(rep("MEA1",13),rep("MEA2",13)),
                               term="Rel. deg. after 5 hours",
-                              estimate=est_rd5,
-                              lower=quant_rd5[,1],
-                              upper=quant_rd5[,2]))
+                              estimate=est_rd,
+                              lower=quant_rd[,1],
+                              upper=quant_rd[,2]))
 
 
 df_degCIs$data <- factor(df_degCIs$data,levels=datanames[13:1])
-df_degCIs$term <- factor(df_degCIs$term,levels=c("Time until 70% of pcd0","Rel. deg. after 5 hours"),
-                              labels = c(expression(Time~until~"70%"~of~pcd[0]),expression(Rel.~deg.~after~5~hours)))
+df_degCIs$term <- factor(df_degCIs$term,levels=c("Time until 50% of pcd0","Rel. deg. after 5 hours"),
+                              labels = c(expression(Time~until~"50%"~of~pcd[0]),expression(Rel.~deg.~after~5~hours)))
 
 
 df_degCIs %>% filter(data!="RH15") %>%
@@ -285,5 +284,3 @@ df_degCIs %>% filter(data!="RH15") %>%
              labeller = label_parsed) +
   labs(y=" ",x="95% CIs",col="material")
 # ggsave(paste0("./plots_rev_deg/CIs_rel_deg.pdf"),width = 10,height = 4)
-
-# too many Infs?, so we leave it..

@@ -617,14 +617,12 @@ predict.RFNR <- function(res_obj,xnew=NULL,dumnew=NULL,time_ind=NULL,type=c("res
         pred_base <- lin_pred_RFNR(res_obj$pars,x_use = xnew,log_order = res_obj$log_order, jump_direction = "none")
         
         if (res_obj$jump_direction != "none") {
-          tmp_pars <- res_obj$pars
-          tmp_pars[] <- 0
-          tmp_pars["log_delta"] <- res_obj$pars["log_delta"]
-          tmp_pars["phi"] <- res_obj$pars["phi"]
-          jumps_use <- lin_pred_RFNR(tmp_pars,x_use = rep(0,length(res_obj$x_use)),dum_use = res_obj$dum_use,
-                                     log_order = res_obj$log_order, jump_direction = res_obj$jump_direction,
-                                     rho_upper = res_obj$rho_upper)
-          
+          if (res_obj$jump_direction=="up") {
+            jump_sign <- 1
+          } else {
+            jump_sign <- -1
+          }
+          jumps_use <- jump_sign*stats::filter(res_obj$dum_use*exp(as.numeric(res_obj$pars["log_delta"])), res_obj$rho_upper/(1+exp(-as.numeric(res_obj$pars["phi"]))), "recursive", init = 0)
           pred_jumps <- approx(x=1:length(res_obj$x_use),y=jumps_use,xout=time_ind,
                                method = "linear",rule=2)
           pred <- pred_base + pred_jumps$y
