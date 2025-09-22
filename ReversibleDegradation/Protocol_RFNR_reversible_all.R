@@ -74,7 +74,7 @@ clusterEvalQ(my.cluster, {
   source("./RFNR_model_functions.R")
 })
 
-# i <- 1
+# i <- 13
 foreach(i=1:length(datanames)) %dopar% {
   data <- read_excel("../data/Dati_PERMANENT_reversible_all_ordered.xlsx",sheet=i)
   if (i==10) {
@@ -165,7 +165,6 @@ foreach(i=1:length(datanames)) %dopar% {
     tmp_material <- "MEA2"
   }
   
-  k <- 4
   for (k in 1:length(models)) {
     modres <- try(models[[k]](y,x,dum[ind_train],ndx[ind_train],jump_direction))
     if (!("try-error" %in% class(modres))) {
