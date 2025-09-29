@@ -10,6 +10,7 @@ to all data sets using parallel computing and saving the results in a compressed
 and 'Results_RFNR_model_all.R' reading in the saved R-files and producing all figures and Tables used in the paper.
 
 Large data files in an folder data/ (in parent repository, not in ReversibleDegradation/) need to be stored locally and are ignored by git due to their large size.
+For the paper 'A Recursive Nonlinear Regression Model for Recoverable Degradation in PEM Fuel Cells' by Parzer et. al., the corresponding data set can be downloaded from https://doi.org/10.5281/zenodo.17223247.
 
 For reproducability, here is the sessionInfo() (used packages and their versions) when executing the file 'Protocol_RFNR_reversible_all.R' to obtain the results presented in the paper:
 
@@ -53,3 +54,4 @@ locale:
 [56] rmarkdown_2.25      codetools_0.2-18    gtable_0.3.6        BB_2019.10-1        R6_2.6.1           
 [61] zoo_1.8-12          fastmap_1.1.1       ragg_1.2.5          stringi_1.8.4       Rcpp_1.0.14        
 [66] vctrs_0.6.5         tidyselect_1.2.1    xfun_0.42          
+
