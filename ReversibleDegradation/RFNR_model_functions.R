@@ -3,8 +3,10 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 pacman::p_load(optimx,ggplotify)
 
+# to do: check all, adapt gradient by ... * exp(log thetaj)
+
 # help function to build linear predictor for each log level
-lin_pred_RFNR <- function(par,x_use,log_order=2,dum_use=NULL,rho_upper=0.99,
+lin_pred_RFNR <- function(par,x_use,log_order=2,dum_use=NULL,rho_upper=1,
                           jump_direction=c("up","down","none")) {
   jump_direction <- match.arg(jump_direction)
   if (jump_direction=="up") {
@@ -20,19 +22,19 @@ lin_pred_RFNR <- function(par,x_use,log_order=2,dum_use=NULL,rho_upper=0.99,
     include_jumps <- FALSE
   }
   if (log_order==0) {
-    pred <- as.numeric(par["c1"]) - as.numeric(par["lam1"])*x_use
+    pred <- as.numeric(par["c1"]) - as.numeric(exp(par["log_lam1"]))*x_use
   } else if (log_order==1) {
-    pred <- as.numeric(par["log_c1"]) - as.numeric(par["lam1"])*x_use
+    pred <- as.numeric(par["log_c1"]) - as.numeric(exp(par["log_lam1"]))*x_use
   } else if (log_order == 2) {
-    pred <- as.numeric(par["log_c1"]) - as.numeric(par["lam1"])*x_use + as.numeric(par["c2"])*exp(-as.numeric(par["lam2"])*x_use)
+    pred <- as.numeric(par["log_c1"]) - as.numeric(exp(par["log_lam1"]))*x_use + as.numeric(exp(par["log_c2"]))*exp(-as.numeric(exp(par["log_lam2"]))*x_use)
   } else {
     if (log_order >3) {
       warning("Highest log order of 3 will be used!")
       log_order <- 3
     }
-    pred <- as.numeric(par["log_c1"]) - as.numeric(par["lam1"])*x_use + 
-      as.numeric(par["c2"])*exp(-as.numeric(par["lam2"])*x_use
-                                + as.numeric(par["c3"])*exp(-as.numeric(par["lam3"])*x_use))
+    pred <- as.numeric(par["log_c1"]) - as.numeric(exp(par["log_lam1"]))*x_use + 
+      as.numeric(exp(par["log_c2"]))*exp(-as.numeric(exp(par["log_lam2"]))*x_use
+                                + as.numeric(exp(par["log_c3"]))*exp(-as.numeric(exp(par["log_lam3"]))*x_use))
   }
   if (include_jumps) {
     stopifnot(!is.null(dum_use))
@@ -42,7 +44,7 @@ lin_pred_RFNR <- function(par,x_use,log_order=2,dum_use=NULL,rho_upper=0.99,
 }
 
 # help function gradient for significance
-grad_lin_pred_RFNR <- function(par,x_use,dum_use=NULL,log_order=2,rho_upper=0.99,jump_direction=c("up","down","none")) {
+grad_lin_pred_RFNR <- function(par,x_use,dum_use=NULL,log_order=2,rho_upper=1,jump_direction=c("up","down","none")) {
   grad <- matrix(c(0),length(x_use),length(par))
   colnames(grad) <- names(par)
   
@@ -62,30 +64,31 @@ grad_lin_pred_RFNR <- function(par,x_use,dum_use=NULL,log_order=2,rho_upper=0.99
   
   if (log_order==0) {
     grad[,"c1"] <- 1
-    grad[,"lam1"] <- -x_use
+    grad[,"log_lam1"] <- -x_use*as.numeric(exp(par["log_lam1"]))
   } else if (log_order==1) {
     grad[,"log_c1"] <- 1
-    grad[,"lam1"] <- -x_use
+    grad[,"log_lam1"] <- -x_use*as.numeric(exp(par["log_lam1"]))
   } else if (log_order == 2) {
     grad[,"log_c1"] <- 1
-    grad[,"lam1"] <- -x_use
-    grad[,"c2"] <- exp(-as.numeric(par["lam2"])*x_use)
-    grad[,"lam2"] <- as.numeric(par["c2"])*exp(-as.numeric(par["lam2"])*x_use)*(-x_use)
-  } else {
+    grad[,"log_lam1"] <- -x_use*as.numeric(exp(par["log_lam1"]))
+    grad[,"log_c2"] <- exp(-as.numeric(exp(par["log_lam2"]))*x_use)*as.numeric(exp(par["log_c2"]))
+    grad[,"log_lam2"] <- as.numeric(exp(par["log_c2"]))*exp(-as.numeric(exp(par["log_lam2"]))*x_use)*(-x_use)*as.numeric(exp(par["log_lam2"]))
+  } else { 
     if (log_order >3) {
       warning("Highest log order of 3 will be used!")
       log_order <- 3
     }
     grad[,"log_c1"] <- 1
-    grad[,"lam1"] <- -x_use
-    grad[,"c2"] <- exp(-as.numeric(par["lam2"])*x_use
-                       + as.numeric(par["c3"])*exp(-as.numeric(par["lam3"])*x_use))
-    grad[,"lam2"] <- as.numeric(par["c2"])*exp(-as.numeric(par["lam2"])*x_use
-                                               + as.numeric(par["c3"])*exp(-as.numeric(par["lam3"])*x_use))*(-x_use)
-    grad[,"c3"] <- as.numeric(par["c2"])*exp(-as.numeric(par["lam2"])*x_use + as.numeric(par["c3"])*exp(-as.numeric(par["lam3"])*x_use)) * 
-      exp(-as.numeric(par["lam3"])*x_use)
-    grad[,"lam3"] <- as.numeric(par["c2"])*exp(-as.numeric(par["lam2"])*x_use + as.numeric(par["c3"])*exp(-as.numeric(par["lam3"])*x_use)) * 
-      as.numeric(par["c3"])*exp(-as.numeric(par["lam3"])*x_use) * (-x_use)
+    grad[,"log_lam1"] <- -x_use*as.numeric(exp(par["log_lam1"]))
+    grad[,"log_c2"] <- (exp(-as.numeric(exp(par["log_lam2"]))*x_use
+                       + as.numeric(exp(par["log_c3"]))*exp(-as.numeric(exp(par["log_lam3"]))*x_use)))*as.numeric(exp(par["log_c2"]))
+    grad[,"log_lam2"] <- (as.numeric(exp(par["log_c2"]))*exp(-as.numeric(exp(par["log_lam2"]))*x_use
+                                               + as.numeric(exp(par["log_c3"]))*exp(-as.numeric(exp(par["log_lam3"]))*x_use))*(-x_use))*as.numeric(exp(par["log_lam2"]))
+  
+    grad[,"log_c3"] <- (as.numeric(exp(par["log_c2"]))*exp(-as.numeric(exp(par["log_lam2"]))*x_use + as.numeric(exp(par["log_c3"]))*exp(-as.numeric(exp(par["log_lam3"]))*x_use))) * 
+      exp(-as.numeric(exp(par["log_c3"]))*x_use)
+    grad[,"log_lam3"] <- (as.numeric(exp(par["log_c2"]))*exp(-as.numeric(exp(par["log_lam2"]))*x_use + as.numeric(exp(par["log_c3"]))*exp(-as.numeric(exp(par["log_lam3"]))*x_use)) * 
+      as.numeric(exp(par["log_c3"]))*exp(-as.numeric(exp(par["log_lam3"]))*x_use) * (-x_use))*exp(-as.numeric(exp(par["log_c3"]))*x_use)
   }
   if (include_jumps) {
     rho <- rho_upper/(1+exp(-as.numeric(par["phi"])))
@@ -100,9 +103,11 @@ grad_lin_pred_RFNR <- function(par,x_use,dum_use=NULL,log_order=2,rho_upper=0.99
   return(grad)
 }
 
-# # # test gradient
+# # # # test gradient
 # res_obj <- res
 # start <- res_obj$pars
+# # start[c(2:4)] <- log(start[c(2:4)])
+# # names(start)[2:4] <- c("log_lam1","log_c2","log_lam2")
 # x_use <- res_obj$x_use
 # dum_use <- res_obj$dum_use
 # mygrad <- grad_lin_pred_RFNR(start,x_use,dum_use,log_order=2,jump_direction=res_obj$jump_direction)
@@ -112,7 +117,7 @@ grad_lin_pred_RFNR <- function(par,x_use,dum_use=NULL,log_order=2,rho_upper=0.99
 #     res <- lin_pred_RFNR(par,x_use=x_use,dum_use=dum_use,log_order=2,jump_direction=res_obj$jump_direction)
 #     res[i]
 #     },start,
-#     method="simple",method.args = list(eps=1e-10))
+#     method="Richardson",method.args = list(eps=1e-4))
 # }
 # absdiff <- numeric(length(x_use))
 # for (i in seq_along(x_use)) {
@@ -131,15 +136,16 @@ grad_lin_pred_RFNR <- function(par,x_use,dum_use=NULL,log_order=2,rho_upper=0.99
 # # # # # # # # # # # # # # # # main function to fit model  # # # # # # # # # # # # # # # 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
-# future: could add option to use standard COV matrix instead of HAC used here
+# future: could add option to use standard COV matrix instead of HAC used here,
+# but HAC is prob good for all time-series applications
 RFNR <- function(y, x, 
                  dum = NULL,
                  ndx = 1:length(y),
                  log_order = 2,
-                 rho_upper = 0.99,
+                 rho_upper = 1,
                  jump_direction=c("up","down","none"),
                  init = NULL,
-                 methods=c("Rvmmin","nvm"),
+                 methods=c("nvm","subplex","mla","lbfgsb3c","spg"),
                  ...) {
   x_use <- x[ndx]
   jump_direction <- match.arg(jump_direction)
@@ -155,6 +161,12 @@ RFNR <- function(y, x,
     } else {
       stopifnot(length(ndx)==length(dum))
       dum_use <- dum
+    }
+    if (sum(dum_use)==0) {
+      warning("No jumps indicated; jump_direction is set to 'none'!")
+      jump_direction <- "none"
+      include_jumps <- FALSE
+      dum_use <- NULL
     }
     if (jump_direction=="up") {
       jump_sign <- 1
@@ -183,9 +195,9 @@ RFNR <- function(y, x,
         rec_filt <- 0
       }
       
-      res <- resp - par["c1"] + par["lam1"]*x_use - rec_filt
+      res <- resp - par["c1"] + exp(par["log_lam1"])*x_use - rec_filt
       grad["c1"] <- -2*mean(res)
-      grad["lam1"] <- 2*mean(res*x_use)
+      grad["log_lam1"] <- 2*mean(res*x_use)*exp(par["log_lam1"]) 
       if (include_jumps) {
         grad["log_delta"] <- -2*mean(res*rec_filt)
         grad_rec_filt <- numeric(length(rec_filt))
@@ -199,26 +211,26 @@ RFNR <- function(y, x,
     }
     if (include_jumps) {
       start <- numeric(4)
-      names(start) <- c("c1","lam1","log_delta","phi")
+      names(start) <- c("c1","log_lam1","log_delta","phi")
       if(!is.null(init)) {
         stopifnot(length(init) == length(start)) 
         start[1:4] <- init
       } else {
         # see log_order=2 for details
         start_lm <- lm(resp~x_use)
-        start[1:3] <- c(start_lm$coefficients[1],-start_lm$coefficients[2],(max(start_lm$residuals) - min(start_lm$residuals))/2) 
-        start_rho <- optimize(function(phi) obj(c(start[1:3],phi=phi)),interval=c(-10,10))
+        start[1:3] <- c(start_lm$coefficients[1],log(max(1e-10,-start_lm$coefficients[2])),log((max(start_lm$residuals) - min(start_lm$residuals))/2))
+        start_rho <- optimize(function(phi) obj(c(start[1:3],phi=phi)),interval=c(-5,5))
         start[4] <- start_rho$minimum
       }
     } else {
       start <- numeric(2)
-      names(start) <- c("c1","lam1")
+      names(start) <- c("c1","log_lam1")
       if(!is.null(init)) {
         stopifnot(length(init) == length(start)) 
         start[1:2] <- init
       } else {
         start_lm <- lm(resp~x_use)
-        start[1:2] <- c(start_lm$coefficients[1],-start_lm$coefficients[2])
+        start[1:2] <- c(start_lm$coefficients[1],log(max(1e-10,-start_lm$coefficients[2])))
       }
     }
     
@@ -241,9 +253,9 @@ RFNR <- function(y, x,
         } else {
           rec_filt <- 0
         }
-        res <- resp - par["log_c1"] + par["lam1"]*x_use - rec_filt
+        res <- resp - par["log_c1"] + exp(par["log_lam1"])*x_use - rec_filt
         grad["log_c1"] <- -2*mean(res)
-        grad["lam1"] <- 2*mean(res*x_use)
+        grad["log_lam1"] <- 2*mean(res*x_use)*exp(par["log_lam1"])
         if (include_jumps) {
           grad["log_delta"] <- -2*mean(res*rec_filt)
           grad_rec_filt <- numeric(length(rec_filt))
@@ -257,26 +269,26 @@ RFNR <- function(y, x,
       }
       if (include_jumps) {
         start <- numeric(4)
-        names(start) <- c("log_c1","lam1","log_delta","phi")
+        names(start) <- c("log_c1","log_lam1","log_delta","phi")
         if(!is.null(init)) {
           stopifnot(length(init) == length(start)) 
           start[1:4] <- init
         } else {
           # see log_order=2 for details
           start_lm <- lm(resp~x_use)
-          start[1:3] <- c(start_lm$coefficients[1],-start_lm$coefficients[2],(max(start_lm$residuals) - min(start_lm$residuals))/2) 
-          start_rho <- optimize(function(phi) obj(c(start[1:3],phi=phi)),interval=c(-10,10))
+          start[1:3] <- c(start_lm$coefficients[1],log(max(1e-10,-start_lm$coefficients[2])),log((max(start_lm$residuals) - min(start_lm$residuals))/2) )
+          start_rho <- optimize(function(phi) obj(c(start[1:3],phi=phi)),interval=c(-5,5))
           start[4] <- start_rho$minimum
         }
       } else {
         start <- numeric(2)
-        names(start) <- c("log_c1","lam1")
+        names(start) <- c("log_c1","log_lam1")
         if(!is.null(init)) {
           stopifnot(length(init) == length(start)) 
           start[1:2] <- init
         } else {
           start_lm <- lm(resp~x_use)
-          start[1:2] <- c(start_lm$coefficients[1],-start_lm$coefficients[2])
+          start[1:2] <- c(start_lm$coefficients[1],log(max(1e-10,-start_lm$coefficients[2])))
         }
       }
     } else if (log_order == 2) {
@@ -296,11 +308,11 @@ RFNR <- function(y, x,
         } else {
           rec_filt <- 0
         }
-        res <- resp - par["log_c1"] + par["lam1"]*x_use - par["c2"]*exp(-par["lam2"]*x_use) - rec_filt
+        res <- resp - par["log_c1"] + exp(par["log_lam1"])*x_use - exp(par["log_c2"])*exp(-exp(par["log_lam2"])*x_use) - rec_filt
         grad["log_c1"] <- -2*mean(res)
-        grad["lam1"] <- 2*mean(res*x_use)
-        grad["c2"] <- -2*mean(res*exp(-par["lam2"]*x_use))
-        grad["lam2"] <- 2*mean(res*x_use*exp(-par["lam2"]*x_use)*par["c2"])
+        grad["log_lam1"] <- 2*mean(res*x_use)*exp(par["log_lam1"])
+        grad["log_c2"] <- -2*mean(res*exp(-exp(par["log_lam2"])*x_use))*exp(par["log_c2"])
+        grad["log_lam2"] <- 2*mean(res*x_use*exp(-exp(par["log_lam2"])*x_use)*exp(par["log_c2"]))*exp(par["log_lam2"])
         if (include_jumps) {
           grad["log_delta"] <- -2*mean(res*rec_filt)
           grad_rec_filt <- numeric(length(rec_filt))
@@ -314,7 +326,7 @@ RFNR <- function(y, x,
       }
       if (include_jumps) {
         start <- numeric(6)
-        names(start) <- c("log_c1","lam1","c2","lam2","log_delta","phi")
+        names(start) <- c("log_c1","log_lam1","log_c2","log_lam2","log_delta","phi")
         if(!is.null(init)) {
           stopifnot(length(init) == length(start)) 
           start[1:6] <- init
@@ -326,48 +338,36 @@ RFNR <- function(y, x,
           # beta_2 = c2*lam2^2/2 -> lam2
           start_lm1 <- lm(resp~x_use)
           start[1] <- start_lm1$coefficients[1]
-          start[2] <- -start_lm1$coefficients[2]
+          start[2] <- log(-start_lm1$coefficients[2])
           start_lm2 <- lm(resp~x_use+I(x_use^2))
-          start[3] <- start_lm2$coefficients[1] - start_lm1$coefficients[1]
+          start[3] <- log(max(1e-10,start_lm2$coefficients[1] - start_lm1$coefficients[1]))
           if (start_lm2$coefficients[3] / start[3] > 0) {
-            start[4] <- sqrt(2*start_lm2$coefficients[3] / start[3])
+            start[4] <- log(sqrt(2*start_lm2$coefficients[3] / start[3]))
           } else {
-            start[4] <- -(start_lm2$coefficients[2] + start[2])/start[3]
+            start[4] <- log(max(1e-10,-(start_lm2$coefficients[2] + start[2])/start[3]))
           }
           # delta from half range of residuals (right order of magnitude)
-          start[5] <- (max(start_lm2$residuals) - min(start_lm2$residuals))/2
+          start[5] <- log((max(start_lm2$residuals) - min(start_lm2$residuals))/2)
           # rho from optimal linesearch with current starting values
-          start_rho <- optimize(function(phi) obj(c(start[1:5],phi=phi)),interval=c(-10,10))
+          start_rho <- optimize(function(phi) obj(c(start[1:5],phi=phi)),interval=c(-5,5))
           start[6] <- start_rho$minimum
-          
-          # first old approach: (not that robust, problem when sqrt(<0))
-          # start_lm <- lm(resp~x_use+I(x_use^2))
-          # start_lc1 <- optimize(f = function(tmp_lc1) (mean(resp[1:10]) - start_lm$coefficients[1] - exp(tmp_lc1) + tmp_lc1)^2,
-          #                     interval = c(-10,10))
-          # start[1] <- start_lc1$minimum
-          # start[3] <- start_lm$coefficients[1] - start_lc1$minimum
-          # start[4] <- sqrt(max(c(0,2*start_lm$coefficients[3]/start[3])))
-          # start[2] <- -start[3]*start[4] - start_lm$coefficients[2]
-          # start[5] <- (max(start_lm$residuals) - min(start_lm$residuals))/2
-          # start_rho <- optimize(function(phi) obj(c(start[1:5],phi=phi)),interval=c(-100,10))
-          # start[6] <- start_rho$minimum
         }
       } else {
         start <- numeric(4)
-        names(start) <- c("log_c1","lam1","c2","lam2")
+        names(start) <- c("log_c1","log_lam1","log_c2","log_lam2")
         if(!is.null(init)) {
           stopifnot(length(init) == length(start)) 
           start[1:4] <- init
         } else {
           start_lm1 <- lm(resp~x_use)
           start[1] <- start_lm1$coefficients[1]
-          start[2] <- -start_lm1$coefficients[2]
+          start[2] <- log(max(1e-10,-start_lm1$coefficients[2]))
           start_lm2 <- lm(resp~x_use+I(x_use^2))
-          start[3] <- start_lm2$coefficients[1] - start_lm1$coefficients[1]
+          start[3] <- log(max(1e-10,start_lm2$coefficients[1] - start_lm1$coefficients[1]))
           if (start_lm2$coefficients[3] / start[3] > 0) {
-            start[4] <- sqrt(2*start_lm2$coefficients[3] / start[3])
+            start[4] <- log(sqrt(2*start_lm2$coefficients[3] / start[3]))
           } else {
-            start[4] <- -(start_lm2$coefficients[2] + start[2])/start[3]
+            start[4] <- log(max(1e-10,-(start_lm2$coefficients[2] + start[2])/start[3]))
           }
         }
       }
@@ -393,15 +393,15 @@ RFNR <- function(y, x,
         } else {
           rec_filt <- 0
         }
-        exp_term <- exp(-par["lam2"]*x_use + par["c3"]*exp(-par["lam3"]*x_use))
-        res <- resp - par["log_c1"] + par["lam1"]*x_use - 
-          par["c2"]*exp_term - rec_filt
+        exp_term <- exp(-exp(par["log_lam2"])*x_use + exp(par["log_c3"])*exp(-exp(par["log_lam3"])*x_use))
+        res <- resp - par["log_c1"] + exp(par["log_lam1"])*x_use - 
+          exp(par["log_c2"])*exp_term - rec_filt
         grad["log_c1"] <- -2*mean(res)
-        grad["lam1"] <- 2*mean(res*x_use)
-        grad["c2"] <- -2*mean(res*exp_term)
-        grad["lam2"] <- 2*mean(res*x_use*exp_term*par["c2"])
-        grad["c3"] <- -2*par["c2"]*mean(res*exp(-par["lam3"]*x_use)*exp_term)
-        grad["lam3"] <- 2*par["c2"]*par["c3"]*mean(res*x_use*exp_term*exp(-par["lam3"]*x_use))
+        grad["log_lam1"] <- 2*mean(res*x_use)*exp(par["log_lam1"])
+        grad["log_c2"] <- -2*mean(res*exp_term)*exp(par["log_c2"])
+        grad["log_lam2"] <- 2*mean(res*x_use*exp_term*exp(par["log_c2"]))*exp(par["log_lam2"])
+        grad["log_c3"] <- -2*exp(par["log_c2"])*mean(res*exp(-exp(par["log_lam3"])*x_use)*exp_term)*exp(par["log_c3"])
+        grad["log_lam3"] <- 2*exp(par["log_c2"])*exp(par["log_c3"])*mean(res*x_use*exp_term*exp(-exp(par["log_lam3"])*x_use))*exp(par["log_lam3"])
         if (include_jumps) {
           grad["log_delta"] <- -2*mean(res*rec_filt)
           grad_rec_filt <- numeric(length(rec_filt))
@@ -415,7 +415,7 @@ RFNR <- function(y, x,
       }
       if (include_jumps) {
         start <- numeric(8)
-        names(start) <- c("log_c1","lam1","c2","lam2","c3","lam3","log_delta","phi")
+        names(start) <- c("log_c1","log_lam1","log_c2","log_lam2","log_c3","log_lam3","log_delta","phi")
         if(!is.null(init)) {
           stopifnot(length(init) == length(start)) 
           start[1:8] <- init
@@ -423,40 +423,40 @@ RFNR <- function(y, x,
           # do same as before, but set c3 = c2/2, lam3 = lam2/2, c2=c2/2, lam2 = lam2/2
           start_lm1 <- lm(resp~x_use)
           start[1] <- start_lm1$coefficients[1]
-          start[2] <- -start_lm1$coefficients[2]
+          start[2] <- log(max(1e-10,-start_lm1$coefficients[2]))
           start_lm2 <- lm(resp~x_use+I(x_use^2))
-          start[3] <- start_lm2$coefficients[1] - start_lm1$coefficients[1]
+          start[3] <- log(max(1e-10,start_lm2$coefficients[1] - start_lm1$coefficients[1]))
           if (start_lm2$coefficients[3] / start[3] > 0) {
-            start[4] <- sqrt(2*start_lm2$coefficients[3] / start[3])
+            start[4] <- log(sqrt(2*start_lm2$coefficients[3] / start[3]))
           } else {
-            start[4] <- -(start_lm2$coefficients[2] + start[2])/start[3]
+            start[4] <- log(max(1e-10,-(start_lm2$coefficients[2] + start[2])/start[3]))
           }
-          start[3:4] <- start[3:4]/2
+          start[3:4] <- start[3:4] - log(2) # same as half of exp: log( exp(x)/2 = x - log(2)
           start[5:6] <- start[3:4]
           # delta from half range of residuals (right order of magnitude)
-          start[7] <- (max(start_lm2$residuals) - min(start_lm2$residuals))/2
+          start[7] <- log((max(start_lm2$residuals) - min(start_lm2$residuals))/2)
           # rho from optimal linesearch with current starting values
-          start_rho <- optimize(function(phi) obj(c(start[1:7],phi=phi)),interval=c(-10,10))
+          start_rho <- optimize(function(phi) obj(c(start[1:7],phi=phi)),interval=c(-5,5))
           start[8] <- start_rho$minimum
         }
       } else {
         start <- numeric(6)
-        names(start) <- c("log_c1","lam1","c2","lam2","c3","lam3")
+        names(start) <- c("log_c1","log_lam1","log_c2","log_lam2","log_c3","log_lam3")
         if(!is.null(init)) {
           stopifnot(length(init) == length(start)) 
           start[1:6] <- init
         } else {
           start_lm1 <- lm(resp~x_use)
           start[1] <- start_lm1$coefficients[1]
-          start[2] <- -start_lm1$coefficients[2]
+          start[2] <- log(max(1e-10,-start_lm1$coefficients[2]))
           start_lm2 <- lm(resp~x_use+I(x_use^2))
-          start[3] <- start_lm2$coefficients[1] - start_lm1$coefficients[1]
+          start[3] <- log(max(1e-10,start_lm2$coefficients[1] - start_lm1$coefficients[1]))
           if (start_lm2$coefficients[3] / start[3] > 0) {
-            start[4] <- sqrt(2*start_lm2$coefficients[3] / start[3])
+            start[4] <- log(sqrt(2*start_lm2$coefficients[3] / start[3]))
           } else {
-            start[4] <- -(start_lm2$coefficients[2] + start[2])/start[3]
+            start[4] <- log(max(1e-10,-(start_lm2$coefficients[2] + start[2])/start[3]))
           }
-          start[3:4] <- start[3:4]/2
+          start[3:4] <- start[3:4] - log(2)
           start[5:6] <- start[3:4]
         }
       }
@@ -464,7 +464,7 @@ RFNR <- function(y, x,
   }
   
   
-  # try all available and look what works best, grad for phi not correct
+  # try all available and look what works best
   opm_res <- opm(start,obj,gr=gr_obj,
                  method=methods,...) 
   
@@ -473,16 +473,25 @@ RFNR <- function(y, x,
   # num_gr
   # sum(abs(gr_obj(start)-num_gr))
   
-  if (!any(opm_res$convergence==0)) {
-    warning("No converged optimization method, try a different solver or adjust controls!")
+
+  best_cand <- which(opm_res$kkt1 & opm_res$kkt2)
+  if (length(best_cand)==0) {
+    best_cand <- which(opm_res$kkt1 & opm_res$convergence==0)
   }
-  # best methods for log_order 0: (nlminb) Rvmmin ucminf nvm
-  # best methods for log_order 1: (nlminb) Rvmmin ucfminf (subplex) nvm
-  # best methods for log_order 2: nlminb Rvmmin nvm 
-  # best methods for log_order 3: BFGS Rvmmin nvm 
+  if (length(best_cand)==0) {
+    best_cand <- which(opm_res$convergence==0)
+  }
+  if (length(best_cand)==0) {
+    warning("No converged optimization method, try a different solver or adjust controls!")
+    best_cand <- 1:length(methods)
+  }
   
-  ind_best <- which.min(opm_res$value)
-  pars <- opm_res[ind_best,1:(ncol(opm_res)-8)]
+  # # could also consider norm of found solutions, but just pick lowest obj value for now
+  # values <- opm_res$value[best_cand]
+  # norms <- apply(opm_res[best_cand,1:(ncol(opm_res)-8)],1,function(tmp_par) sqrt(mean(tmp_par^2)))
+  # best_ind <- best_cand[which.min(values / mean(values^2) + norms/mean(norms^2))]
+  best_ind <- best_cand[which.min(opm_res$value[best_cand])]
+  pars <- opm_res[best_ind,1:(ncol(opm_res)-8)]
   
   if (log_order > 0) {
     fitted_base <- exp(lin_pred_RFNR(pars,x_use,log_order,dum_use,jump_direction = "none"))
@@ -608,14 +617,12 @@ predict.RFNR <- function(res_obj,xnew=NULL,dumnew=NULL,time_ind=NULL,type=c("res
         pred_base <- lin_pred_RFNR(res_obj$pars,x_use = xnew,log_order = res_obj$log_order, jump_direction = "none")
         
         if (res_obj$jump_direction != "none") {
-          tmp_pars <- res_obj$pars
-          tmp_pars[] <- 0
-          tmp_pars["log_delta"] <- res_obj$pars["log_delta"]
-          tmp_pars["phi"] <- res_obj$pars["phi"]
-          jumps_use <- lin_pred_RFNR(tmp_pars,x_use = rep(0,length(res_obj$x_use)),dum_use = res_obj$dum_use,
-                                     log_order = res_obj$log_order, jump_direction = res_obj$jump_direction,
-                                     rho_upper = res_obj$rho_upper)
-          
+          if (res_obj$jump_direction=="up") {
+            jump_sign <- 1
+          } else {
+            jump_sign <- -1
+          }
+          jumps_use <- jump_sign*stats::filter(res_obj$dum_use*exp(as.numeric(res_obj$pars["log_delta"])), res_obj$rho_upper/(1+exp(-as.numeric(res_obj$pars["phi"]))), "recursive", init = 0)
           pred_jumps <- approx(x=1:length(res_obj$x_use),y=jumps_use,xout=time_ind,
                                method = "linear",rule=2)
           pred <- pred_base + pred_jumps$y
@@ -677,14 +684,13 @@ summary.RFNR <-  function(res_obj,corr=FALSE) {
   # }
   
 
-  # use sqrt(variance x bias.correction), df t approx
-
   # HACcov <- sandwich::vcovHAC(res_obj,diagnostics=TRUE) 
   # uses by default cyclic weigths which can be negative
   
   # instead, use weave, weights based on residual acf
   HACcov <- sandwich::weave(res_obj,method="trunc",diagnostics=TRUE)
-  
+  HACcov <- as.matrix(Matrix::nearPD(HACcov)$mat)
+  colnames(HACcov) <- row.names(HACcov) <- names(res_obj$pars)
   param <- as.numeric(res_obj$pars)
   se <- sqrt(diag(HACcov))
   zval <- param/se
@@ -727,7 +733,7 @@ eval_fit <- function(y,yhat) {
 # # # # # testing in development
 
 # pacman::p_load(tidyverse,readxl)
-# dt <- read_xlsx("../data/Dati_PERMANENT_reversible.xlsx", sheet = 3)
+# dt <- read_xlsx("../data/Dati_PERMANENT_reversible.xlsx", sheet = 1)
 # # dt <- read_excel("../data/Dati_PERMANENT_reversible_RH.xlsx",sheet=1)
 # names(dt) <- c("time", "current")
 # dt$time <- (dt$time - 1)*60
@@ -735,31 +741,59 @@ eval_fit <- function(y,yhat) {
 # ndx <- seq(1, nrow(dt), 60*10)
 # x <- dt$time
 # y <- dt$current
-# dum <- c(0, diff(log(dt$current[ndx])) > 0.2)
+# summary(diff(log(dt$current[ndx])))
+# dum <- c(0, diff(log(dt$current[ndx])) > 0.1)
+# # dum <- c(0, diff(log(dt$current[ndx])) < -0.1)
 # # dum <- c(0, abs(diff(log(dt$current[ndx]))) > 0.1)
+# 
 # 
 # xnew <- x[-ndx]
 # time_ind <- 1 + (1:length(x))[-ndx] * (length(ndx)-1) / (max(ndx))
 # 
 # log_order <- 2
-# res <- RFNR(y,x,dum=dum,ndx=ndx,log_order=log_order,jump_direction = "up")
+# # for debugging:
+# # jump_direction <- "up"
+# # rho_upper <- 1
+# # methods <- c("Rvmmin","nvm")
+# # init <- NULL
+# 
+# res_obj <- RFNR(y,x,dum=dum,ndx=ndx,log_order=log_order,jump_direction = "up",
+#             init=c(-1,-10,-1,-10,0,1),
+#             methods=c("nvm","subplex","mla","lbfgsb3c","spg"))
+# 
+# res <- RFNR(y,x,dum=dum,ndx=ndx,log_order=log_order,jump_direction = "up",
+#             init=c(-1,-10,-1,-10,0,1),
+#             methods=c("nvm","Rvmmin",
+#                       "nlminb","ucminf", "subplex", "ncg",
+#                       "Rcgmin","mla",
+#                       "lbfgsb3c", "Rtnmin","spg"))
+# res$dum_use
 # res_obj <- res
 # coef(res)
+# res$start
 # res$opm_res
+# which.min(res$opm_res$value)
 # summary(res,corr=TRUE)
 # res
-# # doesnt seem significant, but will be for higher n, s
-# # due to high noise / sigma, implies low t value
 # 
-# eval_fit(log(y[-ndx]),predict(res,xnew = xnew,time_ind = time_ind,type = "linear"))
-# eval_fit(log(y[ndx]),predict(res,xnew = x[ndx],time_ind = 1:length(ndx),type = "linear"))
-# res$sigma*sqrt((length(ndx)-6)/length(ndx))
+# # best candidates (lowest value and kkts): given init / automatic init
+# # i=1: nvm, Rvmmin, nlminb, ucminf,  subplex, ncg, Rcgmin, mla, lbfgsb3c , Rtnmin, spg
+# # i=2 subplex seems best
+# # i=8: eg mla lbfgsb3c
+# # RH100 spg, nvm
 # 
 # plot(res) +
 #   labs(x="time in s")
 # 
 # plot(res,"residuals") +
 #   labs(x="time in s")
+# 
+
+# eval_fit(log(y[-ndx]),predict(res,xnew = xnew,time_ind = time_ind,type = "linear"))
+# eval_fit(log(y[ndx]),predict(res,xnew = x[ndx],time_ind = 1:length(ndx),type = "linear"))
+# res$sigma*sqrt((length(ndx)-6)/length(ndx))
+
+
 
 # looks fine, maybe estimate sd for significance of parameters
 
