@@ -120,7 +120,7 @@ df_parCIs %>%
   facet_wrap(.~parameter,nrow=3,scales="free_x",
              labeller = label_parsed) +
   scale_x_log10() +
-  labs(y=" ",x="95% CIs")
+  labs(y=" ",x=" ")
 # ggsave(paste0("./plots_rev_deg/CIs_all_pars.pdf"),width = 10,height = 12)
 
 
@@ -282,5 +282,5 @@ df_degCIs %>% filter(data!="RH15") %>%
   geom_errorbar(aes(xmin = lower,xmax=upper),alpha=0.6) +
   facet_wrap(.~term,nrow=1,scales="free_x",
              labeller = label_parsed) +
-  labs(y=" ",x="95% CIs",col="material")
+  labs(y=" ",x=" ",col="material")
 # ggsave(paste0("./plots_rev_deg/CIs_rel_deg.pdf"),width = 10,height = 4)

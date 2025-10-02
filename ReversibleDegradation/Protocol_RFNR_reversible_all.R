@@ -74,7 +74,7 @@ clusterEvalQ(my.cluster, {
   source("./RFNR_model_functions.R")
 })
 
-# i <- 13
+# i <- 3
 foreach(i=1:length(datanames)) %dopar% {
   data <- read_excel("../data/Dati_PERMANENT_reversible_all_ordered.xlsx",sheet=i)
   if (i==10) {
@@ -118,9 +118,10 @@ foreach(i=1:length(datanames)) %dopar% {
     geom_line(alpha=0.8) +
     geom_vline(xintercept=data$time[ind],linetype=2,linewidth=0.1) +
     coord_cartesian(xlim=c(xlo,xlo+stepsize)) +
-    geom_hline(yintercept = grad_cutoff,linetype=2)
+    geom_hline(yintercept = grad_cutoff,linetype=2) +
+    labs(x="time (s)")
   # tmp_plot
-  ggsave(paste0("./plots_rev_deg/JumpsClose_",datanames[i],".pdf"),tmp_plot,width = 8,height = 5)
+  ggsave(paste0("./plots_rev_deg/JumpsClose_",datanames[i],".pdf"),tmp_plot,width = 8*0.8,height = 5*0.7)
 
   # check if all proper peaks are detected and not more or less
   tmp_plot <- data %>% mutate(id=1:length(data$time)) %>%
@@ -128,11 +129,11 @@ foreach(i=1:length(datanames)) %dopar% {
     pivot_longer(c(current,grad),names_to = "type",values_to = "value") %>%
     ggplot(aes(x=time,y=value,color=type)) +
     geom_line(alpha=0.6) +
-    geom_vline(xintercept=data$time[ind],linetype=2,linewidth=0.1,alpha=0.4)
+    geom_vline(xintercept=data$time[ind],linetype=2,linewidth=0.1,alpha=0.4) +
+    labs(x="time (s)")
   # tmp_plot
-  ggsave(paste0("./plots_rev_deg/Jumps_",datanames[i],".pdf"),tmp_plot,width = 8,height = 5)
+  ggsave(paste0("./plots_rev_deg/Jumps_",datanames[i],".pdf"),tmp_plot,width = 8*0.8,height = 5*0.7)
 
-  
   # # application
   x <- data$time
   y <- data$current
@@ -191,30 +192,30 @@ foreach(i=1:length(datanames)) %dopar% {
     filter(id%in%ndx)
 
   tmp_plot <- plot(modres) +
-    labs(x="time in s")
+    labs(x="time (s)")
   # tmp_plot
-  ggsave(paste0("./plots_rev_deg/Fitted_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8,height = 5)
+  ggsave(paste0("./plots_rev_deg/Fitted_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8*0.6,height = 5*0.6)
 
   tmp_plot <- plot(modres,"residuals") +
-    labs(x="time in s")
+    labs(x="time (s)")
   # tmp_plot
-  ggsave(paste0("./plots_residuals_rev_deg/Residuals_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8,height = 5)
+  ggsave(paste0("./plots_residuals_rev_deg/Residuals_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8*0.6,height = 5*0.6)
 
   tmp_plot <- plot(modres,"res-QQ")
   # tmp_plot
-  ggsave(paste0("./plots_residuals_rev_deg/ResQQ_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8,height = 5)
+  ggsave(paste0("./plots_residuals_rev_deg/ResQQ_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8*0.6,height = 5*0.6)
   
   tmp_plot <- plot(modres,"res-vs-fitted")
   # tmp_plot
-  ggsave(paste0("./plots_residuals_rev_deg/ResFitted_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8,height = 5)
+  ggsave(paste0("./plots_residuals_rev_deg/ResFitted_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8*0.6,height = 5*0.6)
   
   tmp_plot <- plot(modres,"res-hist")
   # tmp_plot
-  ggsave(paste0("./plots_residuals_rev_deg/ResHist_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8,height = 5)
+  ggsave(paste0("./plots_residuals_rev_deg/ResHist_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8*0.6,height = 5*0.6)
   
   tmp_plot <- plot(modres,"res-acf")
   # tmp_plot
-  ggsave(paste0("./plots_residuals_rev_deg/ResACF_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8,height = 5)
+  ggsave(paste0("./plots_residuals_rev_deg/ResACF_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8*0.6,height = 5*0.64)
 
   
   # normality tests
