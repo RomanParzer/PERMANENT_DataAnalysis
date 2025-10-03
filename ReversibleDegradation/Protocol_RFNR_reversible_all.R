@@ -114,12 +114,14 @@ foreach(i=1:length(datanames)) %dopar% {
     filter(time>xlo,
            time<xlo+stepsize) %>%
     pivot_longer(c(current,grad),names_to = "type",values_to = "value") %>%
-    ggplot(aes(x=time,y=value,color=type)) +
+    ggplot(aes(x=time,y=value,color=type,linetype=type)) +
     geom_line(alpha=0.8) +
     geom_vline(xintercept=data$time[ind],linetype=2,linewidth=0.1) +
     coord_cartesian(xlim=c(xlo,xlo+stepsize)) +
     geom_hline(yintercept = grad_cutoff,linetype=2) +
-    labs(x="time (s)")
+    labs(x="time (s)") +
+    theme_classic() +
+    scale_color_brewer(type="qual",direction = 1,palette=1)
   # tmp_plot
   ggsave(paste0("./plots_rev_deg/JumpsClose_",datanames[i],".pdf"),tmp_plot,width = 8*0.8,height = 5*0.7)
 
@@ -127,10 +129,12 @@ foreach(i=1:length(datanames)) %dopar% {
   tmp_plot <- data %>% mutate(id=1:length(data$time)) %>%
     filter(id%%100==0) %>%
     pivot_longer(c(current,grad),names_to = "type",values_to = "value") %>%
-    ggplot(aes(x=time,y=value,color=type)) +
+    ggplot(aes(x=time,y=value,color=type,linetype=type)) +
     geom_line(alpha=0.6) +
     geom_vline(xintercept=data$time[ind],linetype=2,linewidth=0.1,alpha=0.4) +
-    labs(x="time (s)")
+    labs(x="time (s)") +
+    theme_classic() +
+    scale_color_brewer(type="qual",direction = 1,palette=1)
   # tmp_plot
   ggsave(paste0("./plots_rev_deg/Jumps_",datanames[i],".pdf"),tmp_plot,width = 8*0.8,height = 5*0.7)
 
@@ -192,32 +196,38 @@ foreach(i=1:length(datanames)) %dopar% {
     filter(id%in%ndx)
 
   tmp_plot <- plot(modres) +
-    labs(x="time (s)")
+    aes(linetype=type) +
+    labs(x="time (s)") +
+    theme_classic()
   # tmp_plot
   ggsave(paste0("./plots_rev_deg/Fitted_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8*0.6,height = 5*0.6)
 
   tmp_plot <- plot(modres,"residuals") +
-    labs(x="time (s)")
+    labs(x="time (s)")+
+    theme_classic()
   # tmp_plot
   ggsave(paste0("./plots_residuals_rev_deg/Residuals_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8*0.6,height = 5*0.6)
 
-  tmp_plot <- plot(modres,"res-QQ")
+  tmp_plot <- plot(modres,"res-QQ")+
+    theme_classic()
   # tmp_plot
   ggsave(paste0("./plots_residuals_rev_deg/ResQQ_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8*0.6,height = 5*0.6)
   
-  tmp_plot <- plot(modres,"res-vs-fitted")
+  tmp_plot <- plot(modres,"res-vs-fitted")+
+    theme_classic()
   # tmp_plot
   ggsave(paste0("./plots_residuals_rev_deg/ResFitted_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8*0.6,height = 5*0.6)
   
-  tmp_plot <- plot(modres,"res-hist")
+  tmp_plot <- plot(modres,"res-hist")+
+    theme_classic()
   # tmp_plot
   ggsave(paste0("./plots_residuals_rev_deg/ResHist_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8*0.6,height = 5*0.6)
   
-  tmp_plot <- plot(modres,"res-acf")
+  tmp_plot <- plot(modres,"res-acf")+
+    theme_classic()
   # tmp_plot
   ggsave(paste0("./plots_residuals_rev_deg/ResACF_RFNR_",datanames[i],".pdf"),tmp_plot,width = 8*0.6,height = 5*0.64)
 
-  
   # normality tests
   norm_tests <- list(
     "ad" = goftest::ad.test(modres$log_residuals, "pnorm", mean=0, sd=modres$sigma,estimated = TRUE),

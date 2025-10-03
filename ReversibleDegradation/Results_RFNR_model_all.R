@@ -115,12 +115,15 @@ df_parCIs[6+13+26*1,c(5,6)] <- c(0,Inf) # 2.235798e-13 0.1700911
 
 df_parCIs %>% 
   ggplot(aes(x=estimate,y=data,col=material)) +
-  geom_point() +
-  geom_errorbar(aes(xmin = lower,xmax=upper),alpha=0.6) +
+  geom_point(position=position_nudge(y=ifelse(df_parCIs$material=="MEA1",0.2,-0.2))) +
+  geom_errorbar(aes(xmin = lower,xmax=upper,linetype=material),
+                position=position_nudge(y=ifelse(df_parCIs$material=="MEA1",0.2,-0.2))) +
   facet_wrap(.~parameter,nrow=3,scales="free_x",
              labeller = label_parsed) +
   scale_x_log10() +
-  labs(y=" ",x=" ")
+  theme_bw() +
+  labs(y=" ",x=" ") +
+  scale_color_brewer(type="qual",direction = 1,palette=1)
 # ggsave(paste0("./plots_rev_deg/CIs_all_pars.pdf"),width = 10,height = 12)
 
 
@@ -131,33 +134,39 @@ datanames <- res$datanames
 tmp_plot <- my_full_dat %>%
   filter(!startsWith(data,"RH"),material=="MEA1") %>%
   pivot_longer(c(fit,current),names_to = "type",values_to = "value") %>%
-  ggplot(aes(x=time,y=value,color=type)) +
-  geom_line(alpha=0.8) +
+  ggplot(aes(x=time,y=value,color=type,linetype=type)) +
+  geom_line() +
   facet_wrap(.~factor(data,levels=datanames)) +
-  labs(y=expression(current~density~(A/cm^2)),x="time (s)")
+  labs(y=expression(current~density~(A/cm^2)),x="time (s)") +
+  theme_bw() +
+  # scale_color_grey()
+  scale_color_brewer(type="qual",direction = 1,palette=1)
+  # scale_color_brewer(type="seq",direction = 1,palette=1)
 tmp_plot
 # ggsave(paste0("./plots_rev_deg/ExpBaseline_noRH_original.pdf"),tmp_plot,width = 10,height = 6)
 
 tmp_plot <- my_full_dat %>%
   filter(!startsWith(data,"RH"),material!="MEA1") %>%
   pivot_longer(c(fit,current),names_to = "type",values_to = "value") %>%
-  ggplot(aes(x=time,y=value,color=type)) +
-  geom_line(alpha=0.8) +
+  ggplot(aes(x=time,y=value,color=type,linetype=type)) +
+  geom_line() +
   facet_wrap(.~factor(data,levels=datanames)) +
-  labs(y=expression(current~density~(A/cm^2)),x="time (s)")
+  labs(y=expression(current~density~(A/cm^2)),x="time (s)") +
+  theme_bw() +
+  scale_color_brewer(type="qual",direction = 1,palette=1)
 tmp_plot
 # ggsave(paste0("./plots_rev_deg/ExpBaseline_noRH_MEA2.pdf"),tmp_plot,width = 10,height = 6)
 
 
 tmp_plot <- my_full_dat %>% 
-  # mutate(material=ifelse(material=="original","MEA1","MEA2")) %>%
   filter(startsWith(data,"RH")) %>%
   pivot_longer(c(fit,current),names_to = "type",values_to = "value") %>%
   ggplot(aes(x=time,y=value,linetype=type,col=factor(data,levels=c(datanames[10:13])))) +
-  geom_line(alpha=0.8) +
-  # facet_wrap(.~factor(material,levels=c("MEA1","MEA2"))) +
+  geom_line() +
   facet_wrap(.~material) +
-  labs(y=expression(current~density~(A/cm^2)),x="time (s)",col="rel. humidity")
+  labs(y=expression(current~density~(A/cm^2)),x="time (s)",col="rel. humidity") +
+  theme_bw() +
+  scale_color_brewer(type="seq",direction = -1,palette=1)
 tmp_plot
 # ggsave(paste0("./plots_rev_deg/ExpBaseline_RH.pdf"),tmp_plot,width = 10,height = 4)
 
@@ -184,23 +193,32 @@ for (i in 1:nrow(res$model_fits)) {
                                  rcd=rcd))
 }
 
+col_fac_labels <-c("Ambient/filtered/pure air","Relative humidity")
+names(col_fac_labels) <-  c(FALSE,TRUE)
+
+
 deg_curves <- deg_curves %>% mutate(isrh = startsWith(data,"RH"), type2 = ifelse(isrh,data,type)) 
+deg_curves$type2 <- factor(deg_curves$type2,levels=c("ambient","filter","pure","RH100","RH50","RH30","RH15"))
 deg_curves %>% filter(time>1e3, 
                       !(data=="RH15")
                       ) %>%
-  ggplot(aes(x=1+time,y=rcd,col=factor(type2,levels=c("ambient","filter","pure","RH100","RH50","RH30","RH15")),
+  ggplot(aes(x=1+time,y=rcd,col=type2,
+             #linetype=type2,
              group=data)) +
   geom_line(alpha=0.6,linewidth=1) +
   scale_x_log10() +
-  labs(y=expression(predicted~current~density/pcd[0]),col="type",x="time (s)") +
-  facet_grid(material~isrh,scales="free_x") +
-  theme(strip.text.x = element_blank()) +
+  labs(y=expression(predicted~current~density/pcd[0]),col="type",linetype="type",x="time (s)") +
+  facet_grid(material~isrh,scales="free_x",
+             labeller = labeller(material = c("MEA1","MEA2"), isrh = col_fac_labels)) +
   geom_text(data=deg_curves %>% filter(time>1e5,data=="ALL filters s2",time>106001, time < 106002),
             size=2,nudge_y = -0.05,nudge_x = 0.05,
-            aes(label=data),show.legend = FALSE)
+            aes(label=data),show.legend = FALSE) +
+  theme_bw() +
+  # theme(strip.text.x = element.text(c("Pure","Relative Huzmidity"))) +
+  scale_linetype_manual(values=c(1:3,1:3)) + 
+  scale_color_manual(values=c(scale_color_brewer(type = "seq",palette = 1,direction=1)$palette(3),
+                              scale_color_brewer(type = "seq",palette = 1,direction=-1)$palette(3)))
 # ggsave(paste0("./plots_rev_deg/RelDegCurves_all.pdf"),width = 10,height = 5)
-
-
 
 # # # significance of 70% deg time and of rel deg after 5 hours (18000 sec)
 # not used, too wide (up to Inf) Confidence intervals
@@ -276,11 +294,18 @@ df_degCIs$term <- factor(df_degCIs$term,levels=c("Time until 50% of pcd0","Rel. 
                               labels = c(expression(Time~until~"50%"~of~pcd[0]),expression(Rel.~deg.~after~5~hours)))
 
 
-df_degCIs %>% filter(data!="RH15") %>%
+df_degCIs_plot <- df_degCIs %>% filter(data!="RH15") 
+df_degCIs_plot %>%
   ggplot(aes(x=estimate,y=data,col=material)) +
-  geom_point() +
-  geom_errorbar(aes(xmin = lower,xmax=upper),alpha=0.6) +
+  geom_point(position=position_nudge(y=ifelse(df_degCIs_plot$material=="MEA1",0.2,-0.2))) +
+  geom_errorbar(aes(xmin = lower,xmax=upper,linetype=material),alpha=0.6,
+                position=position_nudge(y=ifelse(df_degCIs_plot$material=="MEA1",0.2,-0.2))) +
   facet_wrap(.~term,nrow=1,scales="free_x",
              labeller = label_parsed) +
-  labs(y=" ",x=" ",col="material")
+  labs(y=" ",x=" ",col="material") +
+  theme_bw() +
+  scale_color_brewer(type="qual",direction = 1,palette=1)
 # ggsave(paste0("./plots_rev_deg/CIs_rel_deg.pdf"),width = 10,height = 4)
+
+
+
