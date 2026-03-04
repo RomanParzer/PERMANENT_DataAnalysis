@@ -1,6 +1,6 @@
 if("pacman" %in% rownames(installed.packages()) == FALSE) {install.packages("pacman")}
 # install (if necessary) and load packages
-pacman::p_load(foreach,parallel,dplyr,tidyr,ggplot2,readxl)
+pacman::p_load(foreach,parallel,dplyr,tidyr,ggplot2,readxl,subplex)
 source("./RFNR_model_functions.R")
 
 
@@ -101,7 +101,7 @@ foreach(i=1:length(datanames)) %dopar% {
       ind[k] <- FALSE
     }
   }
-  data <- data %>% mutate("grad"=grad)
+  data <- data %>% mutate(grad=grad)
   # add jump at start for following experiments
   if (i %in% c(10,13,26)) {
     ind[1] <- TRUE
@@ -308,3 +308,4 @@ saveRDS(list(model_fits=model_fits,
              model_comp = model_comp),
         "./saved_results/results_RFNR_final.rds")
     
+source("./benchmark_comparison_loop.R")
