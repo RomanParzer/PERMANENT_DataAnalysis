@@ -19,7 +19,7 @@ by git due to their size.
 ### `RFNR_help_functions.R`
 The mathematical foundation of the RFNR model. Contains the linear predictor,
 its analytical gradient (used for inference), the MSE objective function with
-its gradient, and evaluation metrics (RMSE, Correlation, MAE). This file is
+its gradient, and evaluation metrics (RMSE, MAE). This file is
 sourced by all other scripts.
 
 ### `RFNR_model_functions.R`
@@ -41,7 +41,7 @@ Four benchmark models sharing the same S3 interface as RFNR:
 Automatic selection of the jump detection threshold τ via the empirical quantile
 of the absolute symmetric gradient of log(current):
 
-$$\tau = Q_{p}\!\left(\left|\nabla \log y\right|\right), \quad p = 0.987$$
+$$\tau = Q_{p}\|\left(\left|\nabla \log y\right|\right), \quad p = 0.987$$
 
 The two RH100 datasets (i=10, i=23) use
 manually set thresholds due to their distinct sampling frequency and signal
