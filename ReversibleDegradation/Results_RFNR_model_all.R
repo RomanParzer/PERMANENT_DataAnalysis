@@ -137,7 +137,7 @@ df_parCIs %>%
   theme_bw() +
   labs(y=" ", x=" ") +
   scale_color_brewer(type="qual", direction=1, palette=1)
-  ggsave("./plots_rev_deg/CIs_all_pars.pdf", width=10, height=12)
+  # ggsave("./plots_rev_deg/CIs_all_pars.pdf", width=10, height=12)
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 3 — FITTED CURVES PLOTS
@@ -155,7 +155,7 @@ my_full_dat %>%
   labs(y=expression(current~density~(A/cm^2)), x="time (s)") +
   theme_bw() +
   scale_color_brewer(type="qual", direction=1, palette=1)
-  ggsave("./plots_rev_deg/ExpBaseline_noRH_original.pdf", width=10, height=6)
+  # ggsave("./plots_rev_deg/ExpBaseline_noRH_original.pdf", width=10, height=6)
 
 # ── non-RH, MEA2 ─────────────────────────────────────────────────────────────────────────
 my_full_dat %>%
@@ -167,7 +167,7 @@ my_full_dat %>%
   labs(y=expression(current~density~(A/cm^2)), x="time (s)") +
   theme_bw() +
   scale_color_brewer(type="qual", direction=1, palette=1)
-  ggsave("./plots_rev_deg/ExpBaseline_noRH_MEA2.pdf", width=10, height=6)
+  # ggsave("./plots_rev_deg/ExpBaseline_noRH_MEA2.pdf", width=10, height=6)
 
 # ── RH datasets, both materials ───────────────────────────────────────────────────────────
 my_full_dat %>%
@@ -180,7 +180,7 @@ my_full_dat %>%
   labs(y=expression(current~density~(A/cm^2)), x="time (s)", col="rel. humidity") +
   theme_bw() +
   scale_color_brewer(type="seq", direction=-1, palette=1)
-  ggsave("./plots_rev_deg/ExpBaseline_RH.pdf", width=10, height=4)
+  # ggsave("./plots_rev_deg/ExpBaseline_RH.pdf", width=10, height=4)
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 4 — RELATIVE DEGRADATION CURVES
@@ -229,7 +229,7 @@ deg_curves %>%
   scale_color_manual(
     values=c(scale_color_brewer(type="seq",palette=1,direction= 1)$palette(3),
              scale_color_brewer(type="seq",palette=1,direction=-1)$palette(3)))
-  ggsave("./plots_rev_deg/RelDegCurves_all.pdf", width=10, height=5)
+  # ggsave("./plots_rev_deg/RelDegCurves_all.pdf", width=10, height=5)
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 5 — BENCHMARK VS RFNR COMPARISON PLOT
@@ -245,7 +245,7 @@ res_bench %>%
        title="Model comparison: RFNR Full vs. Benchmarks") +
   theme_bw() +
   theme(axis.text.x=element_text(angle=30, hjust=1))
-  ggsave("./plots_rev_deg/ModelComparison_RMSE.pdf", width=10, height=5)
+  # ggsave("./plots_rev_deg/ModelComparison_RMSE.pdf", width=10, height=5)
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 6 — CI ON DEGRADATION QUANTITIES (Monte Carlo, M = 100,000)
@@ -331,7 +331,7 @@ df_degCIs_plot %>%
   labs(y=" ", x=" ", col="material") +
   theme_bw() +
   scale_color_brewer(type="qual", direction=1, palette=1)
-  ggsave("./plots_rev_deg/CIs_rel_deg.pdf", width=10, height=4)
+  # ggsave("./plots_rev_deg/CIs_rel_deg.pdf", width=10, height=4)
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 7 — FITTED CURVES COMPARISON: RFNR vs BENCHMARKS (Ambient air s1 t1, MEA1)
@@ -418,7 +418,7 @@ p_fits <- df_fits %>%
   theme_bw() +
   theme(legend.position="bottom")
 p_fits
-ggsave("./plots_rev_deg/FittedComparison_i1.pdf", p_fits, width=10, height=6)
+# ggsave("./plots_rev_deg/FittedComparison_i1.pdf", p_fits, width=10, height=6)
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 8 — SUPPLEMENTARY TABLE 1: bandwidths h and thresholds tau
