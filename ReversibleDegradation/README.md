@@ -5,7 +5,7 @@ This repository aims at sharing the R files for reproducible research and collab
 
 The folder `ReversibleDegradation` includes all R scripts to reproduce the results
 obtained in the paper *"A Stochastic Recursive Nonlinear Regression Model for
-Recoverable Degradation in PEM Fuel Cells"* by Parzer et al.
+Recoverable Degradation in PEM Fuel Cells"* by Parzer et al. (2026)
 
 The corresponding dataset can be downloaded from
 [https://doi.org/10.5281/zenodo.17223247](https://doi.org/10.5281/zenodo.17223247).
@@ -38,14 +38,11 @@ Four benchmark models sharing the same S3 interface as RFNR:
 - **SparseGP**: Sparse Gaussian Process via the `laGP` package
 
 ### `auto_tune_final.R`
-Automatic selection of the jump detection threshold τ via the empirical quantile
-of the absolute symmetric gradient of log(current):
-
-$$\tau = Q_{p}\|\left(\left|\nabla \log y\right|\right), \quad p = 0.987$$
-
-The two RH100 datasets (i=10, i=23) use
-manually set thresholds due to their distinct sampling frequency and signal
-structure.
+Automatic selection of the jump detection threshold $\tau$ via a quantile of the
+absolute symmetric gradient of $log$(current). $p$ = 0.987 was selected by
+minimising the total jump-count discrepancy against expert-validated counts
+across 24 datasets. The two RH100 datasets (i=10, i=23) use manually set
+thresholds due to their distinct sampling frequency and signal structure.
 
 ### `main_analysis.R`
 The main script orchestrating the full analysis in three phases:

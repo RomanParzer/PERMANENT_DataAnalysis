@@ -2,14 +2,34 @@
 # # # # # RESULTS — RFNR + Benchmark Models # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-pacman::p_load(dplyr, tidyr, ggplot2, knitr, ggrepel, kableExtra, MASS, Matrix)
+pacman::p_load(dplyr, tidyr, ggplot2, readxl, knitr, ggrepel, kableExtra, MASS, Matrix)
 source("./RFNR_help_functions.R")
 source("./RFNR_model_functions.R")
+source("./benchmark_model_functions.R")
+source("./auto_tune_final.R")
 
 # ── load results ─────────────────────────────────────────────────────────────────────────
 res       <- readRDS("./saved_results/results_RFNR_final.rds")
 res_bench <- readRDS("./saved_results/results_benchmark_final.rds")
 datanames <- res$datanames
+numdat    <- length(datanames)
+
+# ── tuning parameters (needed for Sections 7 and 8) ─────────────────────────────────────
+tuning       <- setup_tuning(numdat, p = 0.987)
+hs           <- tuning$hs
+grad_cutoffs <- tuning$grad_cutoffs
+
+# ── load all datasets (needed for Sections 7 and 8) ─────────────────────────────────────
+cat("Loading all datasets...\n")
+all_log_y <- vector("list", numdat)
+for (i in 1:numdat) {
+  dat            <- read_excel("./data/Dati_PERMANENT_reversible_all_ordered.xlsx", sheet = i)
+  colnames(dat)  <- c("time", "current")
+  dat$time       <- (dat$time - 1) * 60
+  all_log_y[[i]] <- log(dat$current)
+  cat(sprintf("  sheet %2d OK\n", i))
+}
+cat("Done.\n\n")
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 1 — MODEL COMPARISON TABLES
@@ -76,7 +96,6 @@ df_parCIs$parameter <- factor(df_parCIs$parameter,
                                        expression(delta), expression(rho)))
 
 # ── manual corrections for degenerate CIs ────────────────────────────────────────────────
-# NOTE: re-check these after refitting with auto_tune_final.R — values may have changed.
 
 # 1.1: RH15 MEA2 — CI essentially (0, Inf) for c1, lam1, c2, lam2
 df_parCIs[26,    c(5,6)] <- NA
@@ -118,7 +137,7 @@ df_parCIs %>%
   theme_bw() +
   labs(y=" ", x=" ") +
   scale_color_brewer(type="qual", direction=1, palette=1)
-# ggsave("./plots_rev_deg/CIs_all_pars.pdf", width=10, height=12)
+  ggsave("./plots_rev_deg/CIs_all_pars.pdf", width=10, height=12)
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 3 — FITTED CURVES PLOTS
@@ -136,7 +155,7 @@ my_full_dat %>%
   labs(y=expression(current~density~(A/cm^2)), x="time (s)") +
   theme_bw() +
   scale_color_brewer(type="qual", direction=1, palette=1)
-# ggsave("./plots_rev_deg/ExpBaseline_noRH_original.pdf", width=10, height=6)
+  ggsave("./plots_rev_deg/ExpBaseline_noRH_original.pdf", width=10, height=6)
 
 # ── non-RH, MEA2 ─────────────────────────────────────────────────────────────────────────
 my_full_dat %>%
@@ -148,7 +167,7 @@ my_full_dat %>%
   labs(y=expression(current~density~(A/cm^2)), x="time (s)") +
   theme_bw() +
   scale_color_brewer(type="qual", direction=1, palette=1)
-# ggsave("./plots_rev_deg/ExpBaseline_noRH_MEA2.pdf", width=10, height=6)
+  ggsave("./plots_rev_deg/ExpBaseline_noRH_MEA2.pdf", width=10, height=6)
 
 # ── RH datasets, both materials ───────────────────────────────────────────────────────────
 my_full_dat %>%
@@ -161,7 +180,7 @@ my_full_dat %>%
   labs(y=expression(current~density~(A/cm^2)), x="time (s)", col="rel. humidity") +
   theme_bw() +
   scale_color_brewer(type="seq", direction=-1, palette=1)
-# ggsave("./plots_rev_deg/ExpBaseline_RH.pdf", width=10, height=4)
+  ggsave("./plots_rev_deg/ExpBaseline_RH.pdf", width=10, height=4)
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 4 — RELATIVE DEGRADATION CURVES
@@ -210,7 +229,7 @@ deg_curves %>%
   scale_color_manual(
     values=c(scale_color_brewer(type="seq",palette=1,direction= 1)$palette(3),
              scale_color_brewer(type="seq",palette=1,direction=-1)$palette(3)))
-# ggsave("./plots_rev_deg/RelDegCurves_all.pdf", width=10, height=5)
+  ggsave("./plots_rev_deg/RelDegCurves_all.pdf", width=10, height=5)
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 5 — BENCHMARK VS RFNR COMPARISON PLOT
@@ -226,7 +245,7 @@ res_bench %>%
        title="Model comparison: RFNR Full vs. Benchmarks") +
   theme_bw() +
   theme(axis.text.x=element_text(angle=30, hjust=1))
-# ggsave("./plots_rev_deg/ModelComparison_RMSE.pdf", width=10, height=5)
+  ggsave("./plots_rev_deg/ModelComparison_RMSE.pdf", width=10, height=5)
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 6 — CI ON DEGRADATION QUANTITIES (Monte Carlo, M = 100,000)
@@ -236,8 +255,7 @@ res_bench %>%
 #   - rd_5h: relative degradation after 5 hours
 
 tmp_alpha <- 0.05
-M <- 1e4 
-# M         <- 1e5
+M         <- 1e5
 t_rd      <- 0.5
 rd_time   <- 5 * 3600
 est_t     <- est_rd  <- numeric(26)
@@ -313,15 +331,11 @@ df_degCIs_plot %>%
   labs(y=" ", x=" ", col="material") +
   theme_bw() +
   scale_color_brewer(type="qual", direction=1, palette=1)
-# ggsave("./plots_rev_deg/CIs_rel_deg.pdf", width=10, height=4)
-
-
+  ggsave("./plots_rev_deg/CIs_rel_deg.pdf", width=10, height=4)
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 7 — FITTED CURVES COMPARISON: RFNR vs BENCHMARKS (Ambient air s1 t1, MEA1)
 # ═══════════════════════════════════════════════════════════════════════════════════════════
-
-all_log_y <- readRDS("./data/all_log_y.rds")
 
 i         <- 1
 log_y     <- all_log_y[[i]]
@@ -406,13 +420,9 @@ p_fits <- df_fits %>%
 p_fits
 ggsave("./plots_rev_deg/FittedComparison_i1.pdf", p_fits, width=10, height=6)
 
-
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 8 — SUPPLEMENTARY TABLE 1: bandwidths h and thresholds tau
 # ═══════════════════════════════════════════════════════════════════════════════════════════
-
-# recompute tau for all datasets using auto_tune_final.R
-all_log_y <- readRDS("./data/all_log_y.rds")
 
 tau_table <- data.frame(
   dataset  = datanames,
@@ -447,9 +457,9 @@ kable(tau_table_print,
       escape    = FALSE,
       col.names = c("Dataset", "Material", "$h$", "$\\tau$"),
       caption   = "Bandwidths $h$ and jump detection thresholds $\\tau$ for all
-                   26 datasets. $\\tau$ is the automatically computed 
-                   quantile-based threshold ($p = 0.987$), except for the two 
-                   RH100 datasets (marked with $^*$) where $\\tau$ was set 
+                   26 datasets. $\\tau$ is the automatically computed
+                   quantile-based threshold ($p = 0.987$), except for the two
+                   RH100 datasets (marked with $^*$) where $\\tau$ was set
                    manually due to their distinct signal structure.",
       label     = "") %>%
   kable_styling(latex_options = "hold_position") %>%
@@ -457,44 +467,10 @@ kable(tau_table_print,
            general_title = "",
            escape        = FALSE)
 
-
 # ── Table 2 Supplementary: all 26 datasets, all 4 RFNR variants ──────────────────────────
-
-comp_tab_rmse <- res$model_comp %>%
-  filter(error_measure == "RMSE",
-         error %in% c("train/test","sample fit","withheld fit")) %>%
-  pivot_wider(names_from=c("material","error"), values_from="value") %>%
-  rename(
-    MEA1_test     = `MEA1_train/test`,
-    MEA1_insample = `MEA1_sample fit`,
-    MEA1_interp   = `MEA1_withheld fit`,
-    MEA2_test     = `MEA2_train/test`,
-    MEA2_insample = `MEA2_sample fit`,
-    MEA2_interp   = `MEA2_withheld fit`
-  ) %>%
-  dplyr::select(data, model,
-                MEA1_test, MEA1_insample, MEA1_interp,
-                MEA2_test, MEA2_insample, MEA2_interp)
-
-comp_tab_mae <- res$model_comp %>%
-  filter(error_measure == "MAE",
-         error %in% c("train/test","sample fit","withheld fit")) %>%
-  pivot_wider(names_from=c("material","error"), values_from="value") %>%
-  rename(
-    MEA1_test     = `MEA1_train/test`,
-    MEA1_insample = `MEA1_sample fit`,
-    MEA1_interp   = `MEA1_withheld fit`,
-    MEA2_test     = `MEA2_train/test`,
-    MEA2_insample = `MEA2_sample fit`,
-    MEA2_interp   = `MEA2_withheld fit`
-  ) %>%
-  dplyr::select(data, model,
-                MEA1_test, MEA1_insample, MEA1_interp,
-                MEA2_test, MEA2_insample, MEA2_interp)
-
 comp_tab <- res$model_comp %>%
   filter(error_measure != "Cor") %>%
-  pivot_wider(names_from=c("material","error","error_measure"), 
+  pivot_wider(names_from=c("material","error","error_measure"),
               values_from="value")
 
 colnames(comp_tab) <- c("Data","Model", rep(c("RMSE","MAE"), 6))
@@ -510,7 +486,6 @@ for (i in 1:13)
   group_rows(res$datanames[i], start_row=1+4*(i-1), 4+4*(i-1))
 
 comp_kab
-
 
 # ── session info ──────────────────────────────────────────────────────────────────────────
 sink("./saved_results/sessionInfo.txt")

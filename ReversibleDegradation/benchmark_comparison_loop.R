@@ -12,7 +12,7 @@ if ("pacman" %in% rownames(installed.packages()) == FALSE) install.packages("pac
 pacman::p_load(foreach, parallel, dplyr, tidyr, ggplot2, readxl, optimx, laGP)
 
 source("./RFNR_model_functions.R")
-source("./benchmark_model_functions.R")   # <-- new file
+source("./benchmark_model_functions.R")   
 
 # ── parallel cluster (reuse or recreate) ────────────────────────────────────────────────
 unlink("./saved_results/log_bench.txt")

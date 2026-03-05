@@ -44,6 +44,18 @@ models <- list(
     RFNR(y, x, dum, ndx, log_order=2, jump_direction=jump_direction, init=c(-1,-10,-1,-10,0,1))
 )
 
+# ── load data (needed for automatic tuning) ──────────────────────────────────────────────
+cat("Loading all datasets...\n")
+all_log_y <- vector("list", numdat)
+for (i in 1:numdat) {
+  dat            <- read_excel("./data/Dati_PERMANENT_reversible_all_ordered.xlsx", sheet = i)
+  colnames(dat)  <- c("time", "current")
+  dat$time       <- (dat$time - 1) * 60
+  all_log_y[[i]] <- log(dat$current)
+  cat(sprintf("  sheet %2d OK\n", i))
+}
+cat("Done.\n\n")
+
 # ── automatic tuning: quantile-based threshold ───────────────────────────────────────────
 # tau = Q_p(|nabla log y|), p = 0.987
 # h = 100 for all datasets; h = 8 for RH100 (i=10,23), tau set manually.
@@ -62,7 +74,7 @@ my.cluster <- parallel::makeCluster(n.cores - 1, type = "PSOCK",
 doParallel::registerDoParallel(cl = my.cluster)
 
 clusterExport(my.cluster,
-              c("datanames","models","mygrad","hs","grad_cutoffs"),
+              c("datanames", "models", "mygrad", "hs", "grad_cutoffs"),
               envir = environment())
 clusterEvalQ(my.cluster, {
   pacman::p_load(foreach, parallel, dplyr, tidyr, ggplot2, readxl,
@@ -72,14 +84,14 @@ clusterEvalQ(my.cluster, {
   source("./auto_tune_final.R")
 })
 
-i_done_rfnr <- as.integer(gsub(".*RFNR_results_i(\\d+)\\.rds","\\1",
-                               list.files("./saved_results_loop", pattern="^RFNR_results_i")))
+i_done_rfnr <- as.integer(gsub(".*RFNR_results_i(\\d+)\\.rds", "\\1",
+                               list.files("./saved_results_loop", pattern = "^RFNR_results_i")))
 i_todo_rfnr <- setdiff(1:numdat, i_done_rfnr)
 if (length(i_todo_rfnr) == 0) {
   cat("Phase 1: all RFNR results already present, skipping.\n")
 } else {
   cat(sprintf("Phase 1: fitting RFNR for %d datasets: %s\n",
-              length(i_todo_rfnr), paste(i_todo_rfnr, collapse=", ")))
+              length(i_todo_rfnr), paste(i_todo_rfnr, collapse = ", ")))
 }
 
 foreach(i = i_todo_rfnr) %dopar% {
@@ -93,7 +105,7 @@ foreach(i = i_todo_rfnr) %dopar% {
   if (i == 10) grad <- -grad
   ind <- !is.na(grad) & grad > grad_cutoff
   for (k in seq_len(length(ind) - 1))
-    if (!is.na(ind[k]*ind[k+1]) && ind[k] && ind[k+1]) ind[k] <- FALSE
+    if (!is.na(ind[k] * ind[k+1]) && ind[k] && ind[k+1]) ind[k] <- FALSE
   if (i %in% c(10, 13, 26)) ind[1] <- TRUE
   
   x   <- data$time
@@ -137,11 +149,11 @@ foreach(i = i_todo_rfnr) %dopar% {
     }
   }
   
-  data_tmp <- data %>% mutate(id=1:length(data$time)) %>% filter(id %in% ndx)
+  data_tmp <- data %>% mutate(id = 1:length(data$time)) %>% filter(id %in% ndx)
   
   tmp_plot <- try({
     plot(modres, "scatter") + aes(linetype=type) + labs(x="time (s)") + theme_classic()
-  }, silent=TRUE)
+  }, silent = TRUE)
   if (!inherits(tmp_plot, "try-error"))
     ggsave(paste0("./plots_rev_deg/Fitted_RFNR_", datanames[i], ".pdf"),
            tmp_plot, width=8*0.6, height=5*0.6)
@@ -209,7 +221,7 @@ model_comp  <- data.frame(data=NULL, model=NULL, error=NULL, error_measure=NULL,
 my_full_dat <- data.frame(NULL)
 
 for (i in 1:numdat) {
-  resi <- readRDS(paste0("./saved_results_loop/RFNR_results_i", i, ".rds"))
+  resi           <- readRDS(paste0("./saved_results_loop/RFNR_results_i", i, ".rds"))
   model_fits[i,] <- resi$model_fits
   sum_list[[i]]  <- resi$sum_list
   my_full_dat    <- rbind(my_full_dat, resi$my_full_dat)
@@ -317,7 +329,7 @@ clusterEvalQ(my.cluster, {
   out
 }
 
-clusterExport(my.cluster, c(".prep_dataset",".fit_one"), envir=environment())
+clusterExport(my.cluster, c(".prep_dataset", ".fit_one"), envir=environment())
 
 bench_models_par <- list(
   "WienerDeg" = function(y, x, dum, ndx, jump_direction)
@@ -331,7 +343,7 @@ bench_models_par <- list(
 )
 clusterExport(my.cluster, "bench_models_par", envir=environment())
 
-i_done_par <- as.integer(gsub(".*bench_par_results_i(\\d+)\\.rds","\\1",
+i_done_par <- as.integer(gsub(".*bench_par_results_i(\\d+)\\.rds", "\\1",
                               list.files("./saved_results_loop", pattern="^bench_par_results_i")))
 i_todo_par <- setdiff(1:numdat, i_done_par)
 if (length(i_todo_par) == 0) {
@@ -357,7 +369,8 @@ foreach(i = i_todo_par) %dopar% {
 parallel::stopCluster(my.cluster)
 cat("Phase 2a complete.\n\n")
 
-i_done_gp <- as.integer(gsub(".*bench_gp_results_i(\\d+)\\.rds","\\1",
+# ── Phase 2b: SparseGP (sequential) ─────────────────────────────────────────────────────
+i_done_gp <- as.integer(gsub(".*bench_gp_results_i(\\d+)\\.rds", "\\1",
                              list.files("./saved_results_loop", pattern="^bench_gp_results_i")))
 i_todo_gp <- setdiff(1:numdat, i_done_gp)
 if (length(i_todo_gp) == 0) {
@@ -399,6 +412,7 @@ model_comp_all <- bind_rows(
 
 saveRDS(model_comp_all, "./saved_results/results_benchmark_final.rds")
 
+# ── summary table ────────────────────────────────────────────────────────────────────────
 summary_table <- model_comp_all %>%
   filter(error_measure == "RMSE") %>%
   group_by(model, error) %>%
@@ -408,74 +422,68 @@ summary_table <- model_comp_all %>%
   arrange(error, mean_RMSE)
 print(summary_table)
 
+# ── RFNR variant comparison table ───────────────────────────────────────────────────────
 model_comp_all <- model_comp_all %>%
   mutate(model = ifelse(model == "Full", "RFNR", model))
 
-p_comparison <- model_comp_all %>%
-  filter(error_measure == "RMSE", error %in% c("train/test","sample fit")) %>%
-  mutate(error = factor(error, levels=c("sample fit","train/test"),
-                        labels=c("In-sample","Out-of-sample")))  %>%
-  ggplot(aes(x=reorder(model, value), y=value, fill=family)) +
-  geom_boxplot(outlier.size=0.8) +
-  facet_wrap(~error, scales="free_y") +
-  labs(x=NULL, y="RMSE (log scale)", fill="Model family") +
-  theme_classic() +
-  theme(axis.text.x=element_text(angle=30, hjust=1))
-
-ggsave("./plots_rev_deg/ModelComparison_RMSE.pdf", p_comparison, width=10, height=5)
-
-p_comparison <- model_comp_all %>%
-  filter(error_measure == "MAE", error %in% c("train/test","sample fit")) %>%
-  mutate(error = factor(error, levels=c("sample fit","train/test"),
-                        labels=c("In-sample","Out-of-sample")))  %>%
-  ggplot(aes(x=reorder(model, value), y=value, fill=family)) +
-  geom_boxplot(outlier.size=0.8) +
-  facet_wrap(~error, scales="free_y") +
-  labs(x=NULL, y="MAE (log scale)", fill="Model family") +
-  theme_classic() +
-  theme(axis.text.x=element_text(angle=30, hjust=1))
-
-ggsave("./plots_rev_deg/ModelComparison_MAE.pdf", p_comparison, width=10, height=5)
-
-
-p_comparison <- model_comp_all %>%
-  filter(error_measure == "RMSE",
-         error %in% c("train/test","sample fit","withheld fit"),
-         is.finite(value)) %>%
-  mutate(
-    error = factor(error,
-                   levels=c("sample fit","train/test","withheld fit"),
-                   labels=c("In-sample","Out-of-sample","Interpolation")),
-    model = ifelse(model=="Full","RFNR",model)) %>%
-  ggplot(aes(x=reorder(model, value), y=value, fill=family)) +
-  geom_boxplot(outlier.size=0.8) +
-  facet_wrap(~error, scales="free_y", nrow=1) +
-  labs(x=NULL, y="RMSE (log scale)", fill="Model family") +
-  theme_bw() +
-  theme(axis.text.x=element_text(angle=30, hjust=1))
-ggsave("./plots_rev_deg/ModelComparison_RMSE2.pdf", p_comparison,
-       width=12, height=5)
-
-
-rfnr_tab <- res$model_comp %>%
+rfnr_tab <- rfnr_results$model_comp %>%
   filter(error_measure %in% c("RMSE","MAE"),
          error %in% c("train/test","sample fit","withheld fit"),
          is.finite(value)) %>%
   group_by(model, error, error_measure) %>%
   summarise(mean_val = round(mean(value, na.rm=TRUE), 3),
             sd_val   = round(sd(value,   na.rm=TRUE), 3),
-            .groups="drop") %>%
+            .groups  = "drop") %>%
   mutate(val = sprintf("%.3f (%.3f)", mean_val, sd_val)) %>%
   dplyr::select(model, error, error_measure, val) %>%
   pivot_wider(names_from=c("error","error_measure"), values_from=val) %>%
   arrange(`train/test_RMSE`)
-
 print(rfnr_tab)
+
+# ── comparison plots ─────────────────────────────────────────────────────────────────────
+p_comparison <- model_comp_all %>%
+  filter(error_measure == "RMSE", error %in% c("train/test","sample fit")) %>%
+  mutate(error = factor(error, levels=c("sample fit","train/test"),
+                        labels=c("In-sample","Out-of-sample"))) %>%
+  ggplot(aes(x=reorder(model, value), y=value, fill=family)) +
+  geom_boxplot(outlier.size=0.8) +
+  facet_wrap(~error, scales="free_y") +
+  labs(x=NULL, y="RMSE (log scale)", fill="Model family") +
+  theme_classic() +
+  theme(axis.text.x=element_text(angle=30, hjust=1))
+ggsave("./plots_rev_deg/ModelComparison_RMSE.pdf", p_comparison, width=10, height=5)
+
+p_comparison <- model_comp_all %>%
+  filter(error_measure == "MAE", error %in% c("train/test","sample fit")) %>%
+  mutate(error = factor(error, levels=c("sample fit","train/test"),
+                        labels=c("In-sample","Out-of-sample"))) %>%
+  ggplot(aes(x=reorder(model, value), y=value, fill=family)) +
+  geom_boxplot(outlier.size=0.8) +
+  facet_wrap(~error, scales="free_y") +
+  labs(x=NULL, y="MAE (log scale)", fill="Model family") +
+  theme_classic() +
+  theme(axis.text.x=element_text(angle=30, hjust=1))
+ggsave("./plots_rev_deg/ModelComparison_MAE.pdf", p_comparison, width=10, height=5)
+
+p_comparison <- model_comp_all %>%
+  filter(error_measure == "RMSE",
+         error %in% c("train/test","sample fit","withheld fit"),
+         is.finite(value)) %>%
+  mutate(error = factor(error,
+                        levels=c("sample fit","train/test","withheld fit"),
+                        labels=c("In-sample","Out-of-sample","Interpolation"))) %>%
+  ggplot(aes(x=reorder(model, value), y=value, fill=family)) +
+  geom_boxplot(outlier.size=0.8) +
+  facet_wrap(~error, scales="free_y", nrow=1) +
+  labs(x=NULL, y="RMSE (log scale)", fill="Model family") +
+  theme_bw() +
+  theme(axis.text.x=element_text(angle=30, hjust=1))
+ggsave("./plots_rev_deg/ModelComparison_RMSE2.pdf", p_comparison, width=12, height=5)
 
 cat("\nDone.\n")
 cat("RFNR results:      ./saved_results/results_RFNR_final.rds\n")
 cat("Benchmark results: ./saved_results/results_benchmark_final.rds\n")
-cat("Comparison plot:   ./plots_rev_deg/ModelComparison_RMSE.pdf\n")
+cat("Comparison plots:  ./plots_rev_deg/ModelComparison_RMSE.pdf\n")
 
 sink("./saved_results/sessionInfo.txt")
 print(sessionInfo())

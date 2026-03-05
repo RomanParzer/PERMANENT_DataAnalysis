@@ -3,7 +3,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Three benchmark model families, each with fit / predict / plot / summary S3 methods,
-# structured to mirror RFNR so they can be dropped into the existing foreach loop.
+# structured to mirror RFNR
 #
 # Models implemented:
 #   1. WienerDeg  – Wiener process with linear drift on log(y), MLE via optim()
