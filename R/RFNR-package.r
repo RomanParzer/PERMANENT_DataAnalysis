@@ -13,7 +13,6 @@
 # 
 #' @importFrom foreach foreach
 #' @importFrom doParallel registerDoParallel
-#' @importFrom parallelly availableCores makeClusterPSOCK
 # 
 #' @importFrom rlang .data
 # 

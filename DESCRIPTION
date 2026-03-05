@@ -5,7 +5,7 @@ Version: 1.0.0.0000
 Authors@R: 
     c(person(given = "Roman",
              family = " Parzer",
-             role = c("aut", "cre"),
+             role = c("aut", "cph"),
              email = "TBD",
              comment = c()),
       person(given = "Gianna",
