@@ -241,7 +241,7 @@ res_bench %>%
                         labels=c("Out-of-sample","In-sample","Interpolation")),
          model = ifelse(model=="Full", "RFNR", model)) %>%
   ggplot(aes(x=reorder(model, value), y=value, fill=family)) +
-  geom_boxplot(outlier.size=0.8) +
+  geom_boxplot(outlier.size=0.8) + scale_y_log10()+
   facet_wrap(~error, scales="free_y") +
   labs(x=NULL, y="RMSE (log scale)") +
   theme_bw() +
