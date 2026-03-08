@@ -236,16 +236,20 @@ deg_curves %>%
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 
 res_bench %>%
-  filter(error_measure=="RMSE", error %in% c("train/test","sample fit")) %>%
-  mutate(error = factor(error, levels=c("sample fit","train/test"))) %>%
+  filter(error_measure=="RMSE", error %in% c("train/test","sample fit","withheld fit")) %>%
+  mutate(error = factor(error, levels=c("train/test","sample fit","withheld fit"),
+                        labels=c("Out-of-sample","In-sample","Interpolation")),
+         model = ifelse(model=="Full", "RFNR", model)) %>%
   ggplot(aes(x=reorder(model, value), y=value, fill=family)) +
   geom_boxplot(outlier.size=0.8) +
   facet_wrap(~error, scales="free_y") +
-  labs(x=NULL, y="RMSE (log scale)", fill="Model family",
-       title="Model comparison: RFNR Full vs. Benchmarks") +
+  labs(x=NULL, y="RMSE (log scale)") +
   theme_bw() +
-  theme(axis.text.x=element_text(angle=30, hjust=1))
-  # ggsave("./plots_rev_deg/ModelComparison_RMSE.pdf", width=10, height=5)
+  theme(axis.text.x=element_text(angle=30, hjust=1),
+        legend.position="none") +
+  scale_fill_manual(values = c("RFNR"      = "#66C2A5",
+                               "Benchmark" = "#8DA0CB"))
+# ggsave("./plots_rev_deg/ModelComparison_RMSE.pdf", width=12, height=5)
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 # SECTION 6 — CI ON DEGRADATION QUANTITIES (Monte Carlo, M = 100,000)
