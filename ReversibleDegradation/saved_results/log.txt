@@ -1,0 +1,40 @@
+starting worker pid=70703 on localhost:11103 at 18:50:09.948
+starting worker pid=70718 on localhost:11103 at 18:50:10.139
+starting worker pid=70731 on localhost:11103 at 18:50:10.300
+starting worker pid=70744 on localhost:11103 at 18:50:10.444
+starting worker pid=70757 on localhost:11103 at 18:50:10.581
+starting worker pid=70770 on localhost:11103 at 18:50:10.816
+starting worker pid=70783 on localhost:11103 at 18:50:10.988
+Finished RFNR rep 3 / 26 at 2026-03-03 18:56:51.636855.
+Finished RFNR rep 2 / 26 at 2026-03-03 18:57:16.621308.
+Finished RFNR rep 1 / 26 at 2026-03-03 18:57:38.527887.
+Finished RFNR rep 4 / 26 at 2026-03-03 18:59:09.066536.
+Finished RFNR rep 11 / 26 at 2026-03-03 18:59:54.38235.
+Finished RFNR rep 12 / 26 at 2026-03-03 19:00:45.823765.
+Finished RFNR rep 13 / 26 at 2026-03-03 19:02:19.897589.
+Finished RFNR rep 6 / 26 at 2026-03-03 19:03:16.512691.
+Finished RFNR rep 7 / 26 at 2026-03-03 19:08:26.484401.
+Finished RFNR rep 9 / 26 at 2026-03-03 19:08:40.376319.
+Finished RFNR rep 10 / 26 at 2026-03-03 19:10:21.199663.
+Finished RFNR rep 14 / 26 at 2026-03-03 19:13:15.922938.
+Finished RFNR rep 15 / 26 at 2026-03-03 19:13:31.333925.
+Finished RFNR rep 8 / 26 at 2026-03-03 19:14:58.154392.
+Finished RFNR rep 5 / 26 at 2026-03-03 19:16:53.621465.
+Finished RFNR rep 17 / 26 at 2026-03-03 19:19:13.250541.
+Finished RFNR rep 16 / 26 at 2026-03-03 19:23:08.059582.
+Finished RFNR rep 24 / 26 at 2026-03-03 19:23:48.40091.
+Finished RFNR rep 25 / 26 at 2026-03-03 19:24:32.080539.
+Finished RFNR rep 26 / 26 at 2026-03-03 19:26:15.931226.
+Finished RFNR rep 22 / 26 at 2026-03-03 19:28:02.371993.
+Finished RFNR rep 21 / 26 at 2026-03-03 19:31:36.402216.
+Finished RFNR rep 19 / 26 at 2026-03-03 19:33:06.521899.
+Finished RFNR rep 18 / 26 at 2026-03-03 19:33:41.60014.
+Finished RFNR rep 20 / 26 at 2026-03-03 19:35:44.113721.
+Finished RFNR rep 23 / 26 at 2026-03-03 19:38:04.234285.
+There were 50 or more warnings (use warnings() to see the first 50)
+There were 50 or more warnings (use warnings() to see the first 50)
+There were 50 or more warnings (use warnings() to see the first 50)
+There were 50 or more warnings (use warnings() to see the first 50)
+There were 50 or more warnings (use warnings() to see the first 50)
+There were 50 or more warnings (use warnings() to see the first 50)
+There were 50 or more warnings (use warnings() to see the first 50)

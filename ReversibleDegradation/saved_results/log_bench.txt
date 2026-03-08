@@ -1,0 +1,70 @@
+starting worker pid=72023 on localhost:11103 at 19:38:04.883
+starting worker pid=72036 on localhost:11103 at 19:38:04.988
+starting worker pid=72052 on localhost:11103 at 19:38:05.088
+starting worker pid=72065 on localhost:11103 at 19:38:05.183
+starting worker pid=72078 on localhost:11103 at 19:38:05.281
+starting worker pid=72091 on localhost:11103 at 19:38:05.377
+starting worker pid=72104 on localhost:11103 at 19:38:05.472
+Finished parametric rep 5 / 26 at 2026-03-03 19:42:20.768167.
+Finished parametric rep 2 / 26 at 2026-03-03 19:43:08.491809.
+Finished parametric rep 6 / 26 at 2026-03-03 19:43:29.091379.
+Finished parametric rep 8 / 26 at 2026-03-03 19:46:10.797724.
+Finished parametric rep 11 / 26 at 2026-03-03 19:46:46.993731.
+Finished parametric rep 4 / 26 at 2026-03-03 19:47:06.279179.
+Finished parametric rep 12 / 26 at 2026-03-03 19:47:06.815545.
+Finished parametric rep 13 / 26 at 2026-03-03 19:47:11.749129.
+Finished parametric rep 1 / 26 at 2026-03-03 19:48:05.741504.
+Finished parametric rep 7 / 26 at 2026-03-03 19:50:37.314596.
+Finished parametric rep 15 / 26 at 2026-03-03 19:51:28.56131.
+Finished parametric rep 16 / 26 at 2026-03-03 20:01:17.129517.
+Finished parametric rep 14 / 26 at 2026-03-03 20:01:17.765802.
+Finished parametric rep 18 / 26 at 2026-03-03 20:01:20.183869.
+Finished parametric rep 3 / 26 at 2026-03-03 20:02:14.366907.
+Finished parametric rep 19 / 26 at 2026-03-03 20:06:04.362062.
+Finished parametric rep 21 / 26 at 2026-03-03 20:07:32.737874.
+Finished parametric rep 24 / 26 at 2026-03-03 20:08:36.628923.
+Finished parametric rep 25 / 26 at 2026-03-03 20:09:11.98071.
+Finished parametric rep 26 / 26 at 2026-03-03 20:09:34.33755.
+Finished parametric rep 9 / 26 at 2026-03-03 20:10:51.52574.
+Finished parametric rep 20 / 26 at 2026-03-03 20:11:07.832489.
+Finished parametric rep 17 / 26 at 2026-03-03 20:11:35.555248.
+Finished parametric rep 23 / 26 at 2026-03-03 20:13:25.023943.
+Finished parametric rep 22 / 26 at 2026-03-03 20:18:09.094453.
+Finished parametric rep 10 / 26 at 2026-03-03 20:42:57.195746.
+There were 50 or more warnings (use warnings() to see the first 50)
+Warning messages:
+1: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+2: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+3: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+ There were 50 or more warnings (use warnings() to see the first 50)
+ kktchk: pHes not symmetric -- symmetrizing
+4: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+5: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+6: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+7: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+There were 50 or more warnings (use warnings() to see the first 50)
+Warning messages:
+1: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+2: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+3: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+4: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+5: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+6: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+7: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+8: In kktchk(ans$par, fn, wgr, hess = NULL, upper = NULL, lower = NULL,  :
+  kktchk: pHes not symmetric -- symmetrizing
+There were 50 or more warnings (use warnings() to see the first 50)
+There were 50 or more warnings (use warnings() to see the first 50)

@@ -144,7 +144,9 @@ plot.RFNR <-  function(res_obj,type=c("scatter","residuals","res-vs-fitted","res
   } else if (type=="res-hist") {
     mysd <- res_obj$sigma
     mygg <- ggplot(tmp_df, aes(x=lres)) + 
-      geom_histogram(aes(y=..density..), colour="black", fill="white")+
+      geom_histogram(aes(y=after_stat(density)), colour="black", fill="white",
+                     binwidth = function(x) 2 * IQR(x) / length(x)^(1/3)) + # Freedman-Diaconis rule for bin (GM)
+      stat_function(fun = dnorm, args = list(mean = 0, sd = mysd))+
       stat_function(fun = dnorm, args = list(mean = 0, sd = mysd)) +
       labs(x="log residuals")
   } else if (type=="res-QQ") {

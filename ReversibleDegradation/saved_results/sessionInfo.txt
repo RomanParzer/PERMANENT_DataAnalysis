@@ -1,0 +1,46 @@
+R version 4.4.1 (2024-06-14)
+Platform: aarch64-apple-darwin20
+Running under: macOS 26.2
+
+Matrix products: default
+BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Europe/Rome
+tzcode source: internal
+
+attached base packages:
+[1] parallel  stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] MASS_7.3-61       kableExtra_1.4.0  ggrepel_0.9.6     knitr_1.48       
+ [5] forecast_9.0.1    Matrix_1.7-0      sandwich_3.1-1    goftest_1.2-3    
+ [9] doParallel_1.0.17 iterators_1.0.14  FKF_0.2.6         laGP_1.5-9       
+[13] tidyr_1.3.1       dplyr_1.1.4       foreach_1.5.2     optimx_2025-4.9  
+[17] ggplot2_3.5.1     readxl_1.4.5     
+
+loaded via a namespace (and not attached):
+ [1] gtable_0.3.6        xfun_0.48           lattice_0.22-6     
+ [4] numDeriv_2016.8-1.1 vctrs_0.6.5         tools_4.4.1        
+ [7] generics_0.1.3      tibble_3.2.1        fansi_1.0.6        
+[10] cluster_2.1.6       pacman_0.5.1        pkgconfig_2.0.3    
+[13] RColorBrewer_1.1-3  lifecycle_1.0.4     compiler_4.4.1     
+[16] farver_2.1.2        stringr_1.5.1       textshaping_0.4.0  
+[19] munsell_0.5.1       codetools_0.2-20    htmltools_0.5.8.1  
+[22] pracma_2.4.4        pillar_1.9.0        nloptr_2.1.1       
+[25] rsconnect_1.7.0     rpart_4.1.23        nlme_3.1-166       
+[28] fracdiff_1.5-3      tidyselect_1.2.1    digest_0.6.37      
+[31] maptree_1.4-9       stringi_1.8.4       purrr_1.0.2        
+[34] labeling_0.4.3      fastmap_1.2.0       grid_4.4.1         
+[37] colorspace_2.1-1    cli_3.6.3           magrittr_2.0.3     
+[40] utf8_1.2.4          withr_3.0.2         scales_1.3.0       
+[43] rmarkdown_2.28      timeDate_4041.110   cellranger_1.1.0   
+[46] ragg_1.5.0          zoo_1.8-12          urca_1.3-4         
+[49] evaluate_1.0.1      viridisLite_0.4.2   rlang_1.1.4        
+[52] Rcpp_1.0.13         tgp_2.4-23          glue_1.8.0         
+[55] xml2_1.3.6          lbfgsb3c_2024-3.5   svglite_2.1.3      
+[58] rstudioapi_0.17.1   R6_2.5.1            systemfonts_1.1.0  
