@@ -9,7 +9,7 @@ devtools::load_all(".")
 
 log <- function(...) {
   msg <- paste("#", ..., sep = " ")
-  print(msg)
+  message(msg)
 }
 
 v <- function(...) cat(sprintf(...), "\n", sep = " ", file = stderr())
@@ -38,8 +38,9 @@ task <- function() {
 
 main <- function() {
   args <- commandArgs(trailingOnly = TRUE)
-  log("> start:", paste(args, sep = " "))
-  log("? args:", paste(commandArgs(), sep = ", "))
+  log("> start:", paste(args, collapse = ", "))
+  log("? args:", paste(commandArgs(), collapse = " "))
+  log("? wdir:", getwd())
   rc <- 0
   print(elapsed <- system.time({
     rc <- task()
