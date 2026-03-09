@@ -6,10 +6,22 @@
 
 devtools::load_all(".")
 
+start_time <- Sys.time()
+
+get_timestamp <- function() {
+  curr_time <- Sys.time()
+  elapsed_secs = curr_time - start_time
+  list(
+    timestamp = format(curr_time, "%Y%m%d-%H%M%S"),
+    elapsed = sprintf("%.3f", elapsed_secs)
+  )
+}
 
 log <- function(...) {
   msg <- paste("#", ..., sep = " ")
-  message(msg)
+  ts <- get_timestamp()
+  text <- paste(ts$timestamp, ts$elapsed, "LOG", msg, sep = "|" )
+  message(text)
 }
 
 v <- function(...) cat(sprintf(...), "\n", sep = " ", file = stderr())
@@ -30,8 +42,16 @@ vcall <- function () {
   ))
 }
 
+random_pause <- function () {
+  sec <- as.integer(runif(1, max = 5))
+  log(">>> pause:", sec, ", ...")
+  Sys.sleep(sec)
+  log("<<< pause:", sec, ", done")
+}
+
 task <- function() {
   v("scall: %s", s(scall()))
+  random_pause()
   v("vcall: %s", s(vcall()))
   0
 }
